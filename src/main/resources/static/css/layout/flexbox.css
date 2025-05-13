@@ -1,0 +1,398 @@
+/* 
+ * Utility classes for flexbox layout
+ * 
+ * Material Design 3 recomienda el uso de layouts flexibles y adaptativos.
+ * Este archivo proporciona clases utilitarias para implementar layouts basados en flexbox
+ * siguiendo las recomendaciones de MD3.
+ */
+
+/* Contenedores flex básicos */
+.flex {
+  display: flex;
+}
+
+.flex-inline {
+  display: inline-flex;
+}
+
+/* Dirección del flexbox */
+.flex-row {
+  flex-direction: row;
+}
+
+.flex-row-reverse {
+  flex-direction: row-reverse;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.flex-col-reverse {
+  flex-direction: column-reverse;
+}
+
+/* Wrap */
+.flex-wrap {
+  flex-wrap: wrap;
+}
+
+.flex-nowrap {
+  flex-wrap: nowrap;
+}
+
+.flex-wrap-reverse {
+  flex-wrap: wrap-reverse;
+}
+
+/* Alineación - Justify Content (eje principal) */
+.justify-start {
+  justify-content: flex-start;
+}
+
+.justify-end {
+  justify-content: flex-end;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.justify-around {
+  justify-content: space-around;
+}
+
+.justify-evenly {
+  justify-content: space-evenly;
+}
+
+/* Alineación - Align Items (eje secundario) */
+.items-start {
+  align-items: flex-start;
+}
+
+.items-end {
+  align-items: flex-end;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.items-baseline {
+  align-items: baseline;
+}
+
+.items-stretch {
+  align-items: stretch;
+}
+
+/* Alineación - Align Content (múltiples líneas) */
+.content-start {
+  align-content: flex-start;
+}
+
+.content-end {
+  align-content: flex-end;
+}
+
+.content-center {
+  align-content: center;
+}
+
+.content-between {
+  align-content: space-between;
+}
+
+.content-around {
+  align-content: space-around;
+}
+
+.content-stretch {
+  align-content: stretch;
+}
+
+/* Alineación - Align Self (elemento individual) */
+.self-auto {
+  align-self: auto;
+}
+
+.self-start {
+  align-self: flex-start;
+}
+
+.self-end {
+  align-self: flex-end;
+}
+
+.self-center {
+  align-self: center;
+}
+
+.self-stretch {
+  align-self: stretch;
+}
+
+/* Orden */
+.order-first {
+  order: -1;
+}
+
+.order-last {
+  order: 999;
+}
+
+.order-none {
+  order: 0;
+}
+
+/* Grow y Shrink */
+.flex-grow-0 {
+  flex-grow: 0;
+}
+
+.flex-grow {
+  flex-grow: 1;
+}
+
+.flex-grow-2 {
+  flex-grow: 2;
+}
+
+.flex-shrink-0 {
+  flex-shrink: 0;
+}
+
+.flex-shrink {
+  flex-shrink: 1;
+}
+
+/* Flex Basis y Combinaciones comunes */
+.flex-1 {
+  flex: 1 1 0%;
+}
+
+.flex-auto {
+  flex: 1 1 auto;
+}
+
+.flex-initial {
+  flex: 0 1 auto;
+}
+
+.flex-none {
+  flex: none;
+}
+
+/* Gaps (espaciados) */
+.gap-0 {
+  gap: 0;
+}
+
+.gap-xs {
+  gap: var(--spacing-xs);
+}
+
+.gap-sm {
+  gap: var(--spacing-sm);
+}
+
+.gap-md {
+  gap: var(--spacing-md);
+}
+
+.gap-lg {
+  gap: var(--spacing-lg);
+}
+
+.gap-xl {
+  gap: var(--spacing-xl);
+}
+
+.gap-xxl {
+  gap: var(--spacing-xxl);
+}
+
+/* Gaps en el eje x (columnas) */
+.gap-x-0 {
+  column-gap: 0;
+}
+
+.gap-x-xs {
+  column-gap: var(--spacing-xs);
+}
+
+.gap-x-sm {
+  column-gap: var(--spacing-sm);
+}
+
+.gap-x-md {
+  column-gap: var(--spacing-md);
+}
+
+.gap-x-lg {
+  column-gap: var(--spacing-lg);
+}
+
+.gap-x-xl {
+  column-gap: var(--spacing-xl);
+}
+
+.gap-x-xxl {
+  column-gap: var(--spacing-xxl);
+}
+
+/* Gaps en el eje y (filas) */
+.gap-y-0 {
+  row-gap: 0;
+}
+
+.gap-y-xs {
+  row-gap: var(--spacing-xs);
+}
+
+.gap-y-sm {
+  row-gap: var(--spacing-sm);
+}
+
+.gap-y-md {
+  row-gap: var(--spacing-md);
+}
+
+.gap-y-lg {
+  row-gap: var(--spacing-lg);
+}
+
+.gap-y-xl {
+  row-gap: var(--spacing-xl);
+}
+
+.gap-y-xxl {
+  row-gap: var(--spacing-xxl);
+}
+
+/* Clases específicas para layouts comunes en MD3 */
+.flex-row-equal {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.flex-row-equal > * {
+  flex: 1 1 0%;
+}
+
+.flex-col-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Media queries para comportamiento responsive */
+/* Para pantallas extra pequeñas - Menos de 480px */
+@media (max-width: 480px) {
+  .flex-xs-col {
+    flex-direction: column;
+  }
+
+  .flex-xs-row {
+    flex-direction: row;
+  }
+
+  .justify-xs-start {
+    justify-content: flex-start;
+  }
+
+  .justify-xs-end {
+    justify-content: flex-end;
+  }
+
+  .items-xs-stretch {
+    align-items: stretch;
+  }
+
+  .items-xs-center {
+    align-items: center;
+  }
+
+  .gap-xs-sm {
+    gap: var(--spacing-sm);
+  }
+
+  .order-xs-first {
+    order: -1;
+  }
+
+  .w-xs-100 {
+    width: 100%;
+  }
+}
+
+/* Para pantallas pequeñas - De 481px a 640px */
+@media (min-width: 481px) and (max-width: 640px) {
+  .flex-sm-col {
+    flex-direction: column;
+  }
+
+  .flex-sm-row {
+    flex-direction: row;
+  }
+
+  .justify-sm-start {
+    justify-content: flex-start;
+  }
+
+  .justify-sm-end {
+    justify-content: flex-end;
+  }
+}
+
+/* Para pantallas medianas - De 641px a 768px */
+@media (min-width: 641px) and (max-width: 768px) {
+  .flex-md-col {
+    flex-direction: column;
+  }
+
+  .flex-md-row {
+    flex-direction: row;
+  }
+
+  .justify-md-start {
+    justify-content: flex-start;
+  }
+
+  .justify-md-end {
+    justify-content: flex-end;
+  }
+}
+
+/* Clases específicas para componentes MD3 comunes */
+.flex-md3-field-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.flex-md3-field-col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.flex-md3-card-content {
+  display: flex;
+  flex-direction: column;
+  padding: var(--spacing-md);
+  gap: var(--spacing-sm);
+}

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <th:block
+    th:fragment="layout(title, metaDescription, mainContent, extraStyles, extraScripts)"
+  >
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <meta
+        name="description"
+        content="SRT subtitle files translator between multiple languages"
+        th:replace="${metaDescription}"
+      />
+      <title th:replace="${title}">SubTranslator</title>
+      <link rel="stylesheet" th:href="@{/css/main.css}" />
+      <link rel="preconnect" href="https://api-free.deepl.com" />
+      <!-- Estilos adicionales específicos de la página -->
+      <th:block th:replace="${extraStyles}" />
+    </head>
+    <body>
+      <div class="app">
+        <!-- Header -->
+        <header th:replace="~{fragments/header :: header}">
+          <!-- Contenido por defecto del header que será reemplazado -->
+        </header>
+
+        <!-- Contenido principal -->
+        <main class="main">
+          <div class="container">
+            <div class="main-content" th:replace="${mainContent}"></div>
+          </div>
+        </main>
+
+        <!-- Footer -->
+        <footer th:replace="~{fragments/footer :: footer}">
+          <!-- Contenido por defecto del footer que será reemplazado -->
+        </footer>
+
+        <!-- Área de notificaciones toast -->
+        <div
+          class="toast-container"
+          id="toastContainer"
+          aria-live="polite"
+        ></div>
+      </div>
+
+      <!-- Scripts comunes -->
+      <script type="module" src="/js/main.js" th:src="@{/js/main.js}"></script>
+      <!-- Scripts adicionales específicos de la página -->
+      <th:block th:replace="${extraScripts}" />
+    </body>
+  </th:block>
+</html>

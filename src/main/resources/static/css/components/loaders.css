@@ -1,0 +1,161 @@
+/* Loader y elementos de carga */
+
+.loader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-xl);
+}
+
+/* Asegurar que los elementos ocultos realmente estén ocultos */
+.loader[hidden] {
+  display: none;
+}
+
+.loader__spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid var(--md-surface-variant);
+  border-radius: var(--border-radius-circle);
+  border-top-color: var(--md-primary);
+  animation: spin 1.5s linear infinite;
+}
+
+.loader__text {
+  margin-top: var(--spacing-md);
+  font-size: var(--font-size-base);
+  color: var(--md-on-surface-variant);
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Loader pequeño para botones o elementos menores */
+.loader--small {
+  padding: var(--spacing-md);
+}
+
+.loader--small .loader__spinner {
+  width: 24px;
+  height: 24px;
+  border-width: 2px;
+}
+
+.loader--small .loader__text {
+  font-size: var(--font-size-sm);
+}
+
+/* Loader dentro de botón */
+.button--loading {
+  position: relative;
+  color: transparent;
+  pointer-events: none;
+}
+
+.button--loading::after {
+  content: "";
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  top: calc(50% - 8px);
+  left: calc(50% - 8px);
+  border: 2px solid var(--md-on-primary);
+  border-top-color: transparent;
+  border-radius: var(--border-radius-circle);
+  animation: spin 1s linear infinite;
+}
+
+/* Pantalla completa de carga */
+.loader--fullscreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(var(--md-background-rgb, 255, 251, 254), 0.8);
+  z-index: 1000;
+}
+
+/* Skeleton loader para carga de contenido */
+.skeleton {
+  display: block;
+  background-color: var(--md-surface-variant);
+  border-radius: var(--border-radius-small);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.skeleton--text {
+  height: 1em;
+  margin-bottom: 0.5em;
+  width: 100%;
+}
+
+.skeleton--text:last-child {
+  width: 60%;
+}
+
+.skeleton--circle {
+  width: 50px;
+  height: 50px;
+  border-radius: var(--border-radius-circle);
+}
+
+.skeleton--rectangle {
+  width: 100%;
+  height: 120px;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 0.6;
+  }
+}
+
+/* Progreso */
+.progress {
+  width: 100%;
+  height: 4px;
+  background-color: var(--md-surface-variant);
+  border-radius: var(--border-radius-pill);
+  overflow: hidden;
+}
+
+.progress__bar {
+  height: 100%;
+  background-color: var(--md-primary);
+  border-radius: var(--border-radius-pill);
+  transition: width var(--transition-normal);
+}
+
+.progress__text {
+  display: block;
+  text-align: center;
+  margin-top: var(--spacing-xs);
+  font-size: var(--font-size-sm);
+  color: var(--md-on-surface);
+}
+
+/* Barra de progreso indeterminada */
+.progress--indeterminate .progress__bar {
+  width: 50%;
+  animation: indeterminate 1.5s ease-in-out infinite;
+}
+
+@keyframes indeterminate {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(200%);
+  }
+}

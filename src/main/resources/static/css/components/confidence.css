@@ -1,0 +1,223 @@
+/* Estilos para indicadores de confianza de traducción */
+
+.confidence-indicator {
+  display: inline-flex;
+  align-items: center;
+  margin-left: var(--spacing-xs);
+  font-size: var(--font-size-sm);
+  border-radius: var(--border-radius-small);
+  padding: 0 var(--spacing-xs);
+  height: 1.5rem;
+  font-weight: 500;
+}
+
+.confidence-indicator__icon {
+  margin-right: var(--spacing-xs);
+  width: 1rem;
+  height: 1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.confidence-indicator__text {
+  line-height: 1;
+}
+
+/* Variantes de confianza */
+.confidence-indicator--high {
+  background-color: rgba(var(--md-success), 0.1);
+  color: var(--md-success);
+}
+
+.confidence-indicator--medium {
+  background-color: rgba(var(--md-warning), 0.1);
+  color: var(--md-warning);
+}
+
+.confidence-indicator--low {
+  background-color: rgba(var(--md-error), 0.1);
+  color: var(--md-error);
+}
+
+/* Estilos para subtítulos con diferentes niveles de confianza */
+.subtitle-block {
+  position: relative;
+  border-left: 3px solid transparent;
+  transition: background-color var(--transition-fast);
+}
+
+.subtitle-block--high {
+  border-left-color: var(--md-success);
+}
+
+.subtitle-block--medium {
+  border-left-color: var(--md-warning);
+}
+
+.subtitle-block--low {
+  border-left-color: var(--md-error);
+}
+
+/* Estilos para tooltip de explicación */
+.confidence-tooltip {
+  position: relative;
+  cursor: help;
+}
+
+.confidence-tooltip:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: var(--md-on-surface);
+  color: var(--md-surface);
+  padding: var(--spacing-xs);
+  border-radius: var(--border-radius-small);
+  font-size: var(--font-size-xs);
+  white-space: nowrap;
+  z-index: 10;
+}
+
+/* Estadísticas de confianza */
+.confidence-stats {
+  background-color: var(--md-surface-variant);
+  border-radius: var(--border-radius-medium);
+  padding: var(--spacing-md);
+  margin-top: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+}
+
+.confidence-stats__title {
+  font-size: var(--font-size-base);
+  font-weight: 500;
+  margin-bottom: var(--spacing-xs);
+}
+
+.confidence-stats__meter {
+  height: 0.5rem;
+  width: 100%;
+  background-color: var(--md-outline);
+  border-radius: var(--border-radius-small);
+  overflow: hidden;
+}
+
+.confidence-stats__meter-fill {
+  height: 100%;
+  background-color: var(
+    --md-success
+  ); /* Color para confianza alta por defecto */
+  transition: width var(--transition-normal);
+}
+
+.confidence-stats__meter-fill--medium {
+  background-color: var(--md-warning);
+}
+
+.confidence-stats__meter-fill--low {
+  background-color: var(--md-error);
+}
+
+.confidence-stats__description {
+  margin-top: var(--spacing-xs);
+  font-size: var(--font-size-sm);
+  color: var(--md-on-surface-variant);
+}
+
+/* Estilos para área de detección de idioma y badge */
+.file-upload__detection {
+  font-size: 0.95em;
+  margin-top: var(--spacing-xs);
+  min-height: 1.5em;
+  transition: color var(--transition-fast);
+}
+
+.file-upload__detection--loading {
+  color: var(--md-outline);
+}
+
+.file-upload__detection--success {
+  color: var(--md-success);
+}
+
+.file-upload__detection--error {
+  color: var(--md-error);
+}
+
+.file-upload__badge {
+  background: var(--md-surface-variant);
+  color: var(--md-primary);
+  border-radius: var(--border-radius-small);
+  padding: 0.15em var(--spacing-xs);
+  font-weight: 500;
+  margin-left: var(--spacing-xs);
+}
+
+.file-upload__autoselect {
+  display: inline-block;
+  margin-left: var(--spacing-xs);
+  color: var(--md-success);
+  font-size: 1.1em;
+  vertical-align: middle;
+  cursor: help;
+}
+
+.file-upload__autoselect:focus {
+  outline: 2px solid var(--md-primary);
+  outline-offset: 2px;
+}
+
+.file-upload__autoselect-confirm {
+  margin-top: var(--spacing-xs);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.file-upload__autoselect-btn {
+  background: var(--md-primary);
+  color: var(--md-on-primary);
+  border: none;
+  border-radius: var(--border-radius-small);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: 0.95em;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.file-upload__autoselect-btn:hover:not(:disabled),
+.file-upload__autoselect-btn:focus:not(:disabled) {
+  background: var(--md-primary-container);
+  color: var(--md-on-primary-container);
+}
+
+.file-upload__autoselect-btn--confirmed {
+  background: var(--md-success);
+  color: var(--md-on-primary);
+  cursor: default;
+}
+
+.file-upload__autoselect-msg {
+  color: var(--md-on-surface-variant);
+  font-size: 0.93em;
+}
+
+.file-upload__override-warning {
+  color: var(--md-error);
+  font-size: 0.93em;
+  margin: var(--spacing-xs) 0;
+  font-weight: 400;
+  background: none;
+  border: none;
+  padding: 0;
+  border-radius: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  max-width: 420px;
+}
+
+/* Estilos para el switch estilo Material Design 3 */
+/* The md3-switch styles are now in forms.css */

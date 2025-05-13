@@ -1,0 +1,155 @@
+/* Estilos para la navbar siguiendo Material Design 3 */
+
+.navbar {
+  margin-top: var(--spacing-md);
+  border-radius: var(--border-radius-medium);
+  background-color: var(--md-primary);
+  padding: var(--spacing-sm);
+  box-shadow: var(--md-shadow-2);
+}
+
+.navbar__menu {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.navbar__item {
+  margin: 0 var(--spacing-xs);
+}
+
+.navbar__link {
+  display: inline-block;
+  padding: var(--spacing-xs) var(--spacing-md);
+  border-radius: var(--border-radius-pill);
+  color: var(--md-on-primary);
+  text-decoration: none;
+  font-weight: 500;
+  position: relative;
+  overflow: hidden;
+  transition: color var(--transition-normal),
+    background-color var(--transition-normal);
+  z-index: 1;
+}
+
+/* Asegurar que no hay subrayado en ningún estado */
+.navbar__link:hover,
+.navbar__link:focus,
+.navbar__link:active,
+.navbar__link--active {
+  text-decoration: none;
+}
+
+/* Efecto ripple al hacer click */
+.navbar__link span.ripple {
+  position: absolute;
+  border-radius: 50%;
+  transform: scale(0);
+  animation: rippleEffect 0.6s linear;
+  background-color: rgba(255, 255, 255, 0.4);
+  pointer-events: none;
+}
+
+/* Efecto de brillo en hover */
+.navbar__link::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.2) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: skewX(-25deg);
+  pointer-events: none;
+}
+
+/* Animación de línea en hover - crece desde el centro */
+.navbar__link::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background-color: var(--md-on-primary);
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.navbar__link:hover {
+  transform: translateY(-2px);
+}
+
+.navbar__link:hover::before {
+  animation: shineEffect 0.8s forwards;
+}
+
+.navbar__link:hover::after {
+  width: 80%;
+  opacity: 1;
+  animation: navLinkHover 0.3s ease forwards;
+}
+
+.navbar__link:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.25);
+}
+
+.navbar__link--active {
+  color: var(--md-on-primary);
+  font-weight: 600;
+  background-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 0 0 rgba(255, 255, 255, 0.4);
+}
+
+/* Sobreescribimos la animación de línea para el enlace activo */
+/* .navbar__link--active::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  transform: scaleX(1);
+  transform-origin: left;
+  background-color: var(--md-on-primary);
+  opacity: 0;
+} */
+
+/* Animación especial para el enlace activo en hover */
+.navbar__link--active:hover {
+  animation: pulseNavActive 1.5s infinite;
+}
+
+/* Quitar la animación de línea en hover para el enlace activo */
+.navbar__link--active:hover::after {
+  animation: none;
+}
+
+/* Media queries para responsive */
+@media (max-width: var(--breakpoint-sm)) {
+  .navbar__menu {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .navbar__item {
+    margin: var(--spacing-xs) 0;
+    width: 100%;
+    text-align: center;
+  }
+
+  .navbar__link {
+    width: 100%;
+    padding: var(--spacing-xs) var(--spacing-md);
+  }
+}

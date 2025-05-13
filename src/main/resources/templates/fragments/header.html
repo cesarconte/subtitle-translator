@@ -1,0 +1,33 @@
+<!-- Fragment para el encabezado de la aplicación -->
+<header class="header" th:fragment="header">
+  <div class="container">
+    <div class="header__top">
+      <h1 class="header__title">SubTranslator</h1>
+      <p class="header__subtitle">
+        <span class="header__subtitle--desktop"
+          >Translate subtitle files between multiple languages with confidence
+          scores</span
+        >
+        <span class="header__subtitle--mobile">Translate subtitles easily</span>
+      </p>
+    </div>
+
+    <nav class="navbar">
+      <ul class="navbar__menu">
+        <li class="navbar__item">
+          <a href="/" th:href="@{/}" class="navbar__link navbar__link--active"
+            >Home</a
+          >
+        </li>
+        <li class="navbar__item">
+          <a href="/settings" th:href="@{/settings}" class="navbar__link"
+            >Settings</a
+          >
+        </li>
+        <li class="navbar__item">
+          <a href="/about" th:href="@{/about}" class="navbar__link">About</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>

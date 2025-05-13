@@ -1,0 +1,86 @@
+/* Reset básico */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Restablecer márgenes y configurar color base en el cuerpo */
+body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-base);
+  line-height: 1.5;
+  color: var(--md-on-background);
+  background-color: var(--md-background);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Configurar imágenes responsivas */
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+/* Eliminar estilos de lista por defecto */
+ol,
+ul {
+  list-style: none;
+}
+
+/* Heredar la fuente para inputs y botones */
+input,
+button,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+/* Hacer que las etiquetas se puedan dar clic */
+label {
+  cursor: pointer;
+}
+
+/* Restablecer enlaces */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Tablas */
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* Prevenir overflow horizontal */
+body {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+}
+
+/* Estilos de enfoque para accesibilidad */
+:focus-visible {
+  outline: 2px solid var(--md-primary);
+  outline-offset: 2px;
+}
+
+/* Eliminar animaciones y transiciones para personas que prefieren movimiento reducido */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

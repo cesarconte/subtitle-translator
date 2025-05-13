@@ -1,0 +1,79 @@
+/* Estilos para el header siguiendo Material Design 3 */
+
+.header {
+  background-color: var(--md-primary-container);
+  color: var(--md-on-primary-container);
+  padding: var(--spacing-xl) 0 var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+  border-bottom: 1px solid rgba(var(--md-primary-rgb), 0.1);
+  box-shadow: var(--md-shadow-1);
+}
+
+.header__top {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: var(--spacing-md);
+}
+
+.header__title {
+  font-size: var(--font-size-xxl);
+  font-weight: 700;
+  margin-bottom: var(--spacing-xs);
+  color: var(--md-primary);
+  letter-spacing: -0.5px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.header__subtitle {
+  font-size: var(--font-size-md);
+  opacity: 0.9;
+}
+
+/* Estilos para las variantes de subtítulo en desktop y mobile */
+.header__subtitle--desktop {
+  display: none !important; /* Forzar ocultamiento en móvil */
+}
+
+.header__subtitle--mobile {
+  display: inline !important; /* Forzar visualización en móvil */
+}
+
+@media (min-width: 768px) {
+  /* Solo cambiamos la visualización de los subtítulos en pantallas medianas y grandes */
+  .header__subtitle--desktop {
+    display: inline !important;
+  }
+
+  .header__subtitle--mobile {
+    display: none !important;
+  }
+}
+
+/* Animación sutil al cargar la página */
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.header__title {
+  animation: fadeInDown 0.5s ease-out;
+}
+
+.header__subtitle {
+  animation: fadeInDown 0.5s ease-out 0.1s forwards;
+  /* Quitamos el opacity 0 inicial para evitar conflictos con la visibilidad */
+  /* La animación se encargará de gestionar la opacidad */
+}
+
+.navbar {
+  animation: fadeInDown 0.5s ease-out 0.2s forwards;
+  opacity: 0;
+}

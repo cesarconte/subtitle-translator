@@ -1,0 +1,223 @@
+/* Estilos específicos para la página principal */
+
+/* Ajuste: Elimina el margin-bottom de .uploader y .preview si están dentro de .main-content */
+.main-content > .uploader,
+.main-content > .preview {
+  margin-bottom: 0;
+}
+
+/* Sección de carga de archivos */
+.uploader {
+  background-color: var(--md-surface);
+  border-radius: var(--border-radius-large);
+  padding: var(--spacing-lg);
+  margin-bottom: var(--spacing-xl);
+  box-shadow: var(--md-shadow-2);
+}
+
+/* Ajustes responsive para la sección de carga en media queries consolidadas */
+
+.uploader__title {
+  margin-bottom: var(--spacing-md);
+  color: var(--md-on-surface);
+}
+
+/* Vista previa de subtítulos */
+.preview {
+  background-color: var(--md-surface);
+  border-radius: var(--border-radius-large);
+  padding: var(--spacing-lg);
+  margin-bottom: var(--spacing-xl);
+  box-shadow: var(--md-shadow-2);
+}
+
+.preview__title {
+  margin-bottom: var(--spacing-lg);
+  color: var(--md-on-surface);
+}
+
+/* Ya no necesitamos media queries aquí porque se manejan con las clases de flexbox */
+
+.preview__subtitle {
+  font-size: var(--font-size-md);
+  margin-bottom: var(--spacing-md);
+}
+
+.preview__text {
+  background-color: var(--md-surface-variant);
+  color: var(--md-on-surface-variant);
+  padding: var(--spacing-md);
+  border-radius: var(--border-radius-medium);
+  overflow-x: auto;
+  white-space: pre-wrap;
+  max-height: 400px;
+  overflow-y: auto;
+  font-family: monospace;
+  font-size: var(--font-size-sm);
+}
+
+.preview__actions {
+  margin-top: var(--spacing-lg);
+}
+
+/* Clase específica para los botones de acción en la vista previa */
+.preview-actions-responsive {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px; /* var(--spacing-md) */
+}
+
+/* Responsividad en las media queries consolidadas */
+
+/* La estructura de preview__content ahora se maneja con clases de flexbox en el HTML */
+.preview-content-responsive {
+  display: flex;
+  flex-direction: row;
+  gap: var(--spacing-lg);
+}
+
+/* Responsividad en las media queries consolidadas */
+
+/* Toast notifications */
+.toast-container {
+  position: fixed;
+  bottom: var(--spacing-lg);
+  right: var(--spacing-lg);
+  display: flex;
+  flex-direction: column-reverse;
+  gap: var(--spacing-sm);
+  z-index: 1000;
+  pointer-events: none;
+}
+
+.toast {
+  background-color: var(--md-surface);
+  color: var(--md-on-surface);
+  border-left: 4px solid var(--md-primary);
+  border-radius: var(--border-radius-medium);
+  padding: var(--spacing-md) var(--spacing-lg);
+  box-shadow: var(--md-shadow-3);
+  animation: slide-in 0.3s ease-out;
+  margin-top: var(--spacing-sm);
+  max-width: 300px;
+  pointer-events: all;
+}
+
+.toast--success {
+  border-color: var(--md-success);
+}
+
+.toast--error {
+  border-color: var(--md-error);
+}
+
+.toast--warning {
+  border-color: var(--md-warning);
+}
+
+.toast__message {
+  margin-bottom: 0;
+}
+
+.toast__close {
+  position: absolute;
+  top: var(--spacing-xs);
+  right: var(--spacing-xs);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--md-on-surface-variant);
+  font-size: var(--font-size-lg);
+}
+
+@keyframes slide-in {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-out {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+.toast--closing {
+  animation: slide-out 0.3s ease-out forwards;
+}
+
+/* Ajustes responsive para dispositivos móviles en media queries consolidadas */
+
+/* ===================================================
+   MEDIA QUERIES CONSOLIDADAS
+   =================================================== */
+
+/* Media Queries para pantallas extra pequeñas (max-width: 480px) */
+@media (max-width: 480px) {
+  /* Uploader */
+  .uploader {
+    padding: 16px; /* var(--spacing-md) */
+  }
+
+  /* Preview actions */
+  .preview-actions-responsive {
+    flex-direction: column;
+  }
+
+  .preview-actions-responsive .button {
+    width: 100%;
+  }
+}
+
+/* Media Queries para pantallas pequeñas (max-width: 640px) */
+@media (max-width: 640px) {
+  /* Preview buttons */
+  .preview__actions .button {
+    width: 100%;
+  }
+
+  /* Toast notifications */
+  .toast-container {
+    bottom: 0;
+    right: 0;
+    left: 0;
+  }
+
+  .toast {
+    max-width: 100%;
+    border-radius: 0;
+    border-left: none;
+    border-top: 4px solid var(--md-primary);
+  }
+
+  .toast--success {
+    border-color: var(--md-success);
+  }
+
+  .toast--error {
+    border-color: var(--md-error);
+  }
+
+  .toast--warning {
+    border-color: var(--md-warning);
+  }
+}
+
+/* Media Queries para pantallas medianas */
+@media (max-width: var(--breakpoint-md)) {
+  /* Preview content */
+  .preview-content-responsive {
+    flex-direction: column;
+    gap: var(--spacing-md);
+  }
+}

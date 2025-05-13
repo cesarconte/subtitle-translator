@@ -1,0 +1,17 @@
+<!-- Fragment para el pie de página -->
+<footer class="footer" th:fragment="footer">
+  <div class="container">
+    <p class="footer__text">
+      SubTranslator &copy;
+      <span th:text="${#dates.format(#dates.createNow(), 'yyyy')}">2025</span>.
+      Translation powered by
+      <a
+        href="https://www.deepl.com"
+        class="footer__link"
+        target="_blank"
+        rel="noopener noreferrer"
+        >DeepL</a
+      >
+    </p>
+  </div>
+</footer>

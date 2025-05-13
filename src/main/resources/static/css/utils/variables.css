@@ -1,0 +1,115 @@
+/* Variables CSS globales */
+:root {
+  /* Colores principales - Material Design 3 */
+  --md-primary: #6750a4;
+  --md-primary-rgb: 103, 80, 164; /* RGB value for opacity/transparency */
+  --md-primary-container: #eaddff;
+  --md-on-primary: #ffffff;
+  --md-on-primary-container: #21005e;
+  --md-secondary: #625b71;
+  --md-secondary-container: #e8def8;
+  --md-on-secondary: #ffffff;
+  --md-on-secondary-container: #1e192b;
+  --md-tertiary: #7d5260;
+  --md-tertiary-container: #ffd8e4;
+  --md-on-tertiary: #ffffff;
+  --md-on-tertiary-container: #370b1e;
+  --md-error: #b3261e;
+  --md-error-container: #f9dedc;
+  --md-on-error: #ffffff;
+  --md-on-error-container: #410e0b;
+  --md-surface: #fffbfe;
+  --md-surface-variant: #e7e0ec;
+  --md-on-surface: #1c1b1f;
+  --md-on-surface-variant: #49454e;
+  --md-outline: #79747e;
+  --md-background: #fffbfe;
+  --md-on-background: #1c1b1f;
+
+  /* Colores de estado */
+  --md-success: #0f9d58;
+  --md-warning: #f4b400;
+
+  /* Elevaciones/Sombras */
+  --md-shadow-1: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --md-shadow-2: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  --md-shadow-3: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --md-shadow-4: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --md-shadow-5: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
+  /* Bordes redondeados */
+  --border-radius-small: 4px;
+  --border-radius-medium: 8px;
+  --border-radius-large: 16px;
+  --border-radius-pill: 500px;
+  --border-radius-circle: 50%;
+
+  /* Espaciado */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-xxl: 48px;
+
+  /* Tipografía */
+  --font-family-base: "Roboto", system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Helvetica, Arial, sans-serif;
+  --font-family-display: var(--font-family-base);
+  --font-size-xs: 0.75rem; /* 12px */
+  --font-size-sm: 0.875rem; /* 14px */
+  --font-size-base: 1rem; /* 16px */
+  --font-size-md: 1.125rem; /* 18px */
+  --font-size-lg: 1.25rem; /* 20px */
+  --font-size-xl: 1.5rem; /* 24px */
+  --font-size-xxl: 2rem; /* 32px */
+
+  /* Tamaños de breakpoint para responsive */
+  --breakpoint-xs: 480px;
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+
+  /* Velocidades de transición */
+  --transition-fast: 150ms;
+  --transition-normal: 300ms;
+  --transition-slow: 500ms;
+
+  /* Tamaños de contenedor */
+  --container-max-width: 1200px;
+  --container-padding: var(--spacing-md);
+}
+
+/* Modo oscuro */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --md-primary: #d0bcff;
+    --md-primary-rgb: 208, 188, 255; /* RGB value for opacity/transparency */
+    --md-primary-container: #4f378b;
+    --md-on-primary: #371e73;
+    --md-on-primary-container: #eaddff;
+    --md-secondary: #ccc2dc;
+    --md-secondary-container: #4a4458;
+    --md-on-secondary: #332d41;
+    --md-on-secondary-container: #e8def8;
+    --md-tertiary: #efb8c8;
+    --md-tertiary-container: #633b48;
+    --md-on-tertiary: #492532;
+    --md-on-tertiary-container: #ffd8e4;
+    --md-error: #f2b8b5;
+    --md-error-container: #8c1d18;
+    --md-on-error: #601410;
+    --md-on-error-container: #f9dedc;
+    --md-surface: #1c1b1f;
+    --md-surface-variant: #49454f;
+    --md-on-surface: #e6e1e5;
+    --md-on-surface-variant: #cac4d0;
+    --md-outline: #938f99;
+    --md-background: #1c1b1f;
+    --md-on-background: #e6e1e5;
+  }
+}

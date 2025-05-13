@@ -1,0 +1,119 @@
+/* Configuración de tipografía */
+
+body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-base);
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+/* Encabezados */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-family-display);
+  font-weight: 500;
+  line-height: 1.2;
+  margin-bottom: var(--spacing-md);
+  color: var(--md-on-surface);
+}
+
+h1 {
+  font-size: var(--font-size-xxl);
+}
+
+h2 {
+  font-size: var(--font-size-xl);
+}
+
+h3 {
+  font-size: var(--font-size-lg);
+}
+
+h4 {
+  font-size: var(--font-size-md);
+}
+
+h5,
+h6 {
+  font-size: var(--font-size-base);
+}
+
+/* Párrafos */
+p {
+  margin-bottom: var(--spacing-md);
+}
+
+/* Enlaces */
+a {
+  color: var(--md-primary);
+  text-decoration: none;
+  transition: color var(--transition-fast) ease-in-out;
+}
+
+a:hover {
+  color: var(--md-on-primary-container);
+  text-decoration: underline;
+}
+
+a:focus {
+  outline: 2px solid var(--md-primary);
+  outline-offset: 2px;
+}
+
+/* Listas */
+ul,
+ol {
+  margin-bottom: var(--spacing-md);
+  padding-left: var(--spacing-lg);
+}
+
+/* Texto pequeño */
+small,
+.text-small {
+  font-size: var(--font-size-sm);
+}
+
+/* Código */
+code,
+pre {
+  font-family: monospace;
+  background-color: var(--md-surface-variant);
+  border-radius: var(--border-radius-small);
+  padding: var(--spacing-xs) var(--spacing-sm);
+}
+
+pre {
+  padding: var(--spacing-md);
+  overflow-x: auto;
+  margin-bottom: var(--spacing-md);
+}
+
+/* Estilos para enfatizar */
+strong,
+b {
+  font-weight: 700;
+}
+
+em,
+i {
+  font-style: italic;
+}
+
+/* Responsive */
+@media screen and (max-width: var(--breakpoint-sm)) {
+  h1 {
+    font-size: calc(var(--font-size-xl) * 1.2);
+  }
+
+  h2 {
+    font-size: var(--font-size-xl);
+  }
+
+  h3 {
+    font-size: var(--font-size-lg);
+  }
+}

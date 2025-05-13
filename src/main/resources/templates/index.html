@@ -1,0 +1,246 @@
+<div th:fragment="mainContent">
+  <section class="uploader">
+    <h2 class="uploader__title">Upload your subtitle file</h2>
+
+    <!-- Upload and translation form -->
+    <form id="translationForm" class="form">
+      <!-- Área de carga de archivo -->
+      <div class="file-upload">
+        <div
+          class="file-upload__dropzone flex flex-col items-center animate-fadeIn"
+          id="dropZone"
+        >
+          <input
+            type="file"
+            id="subtitleFile"
+            name="subtitleFile"
+            class="file-upload__input"
+            accept=".srt"
+            aria-describedby="fileHelp"
+          />
+          <label
+            for="subtitleFile"
+            class="file-upload__label flex flex-col items-center gap-md"
+          >
+            <span class="file-upload__icon flex-center">
+              <svg
+                aria-hidden="true"
+                viewBox="0 0 24 24"
+                width="24"
+                height="24"
+              >
+                <path
+                  d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"
+                ></path>
+              </svg>
+            </span>
+            <span class="file-upload__text"
+              >Drag a .srt file or click to select</span
+            >
+          </label>
+          <p id="fileHelp" class="file-upload__help w-xs-100">
+            Only files with .srt extension are supported
+          </p>
+          <p
+            id="fileSelected"
+            class="file-upload__selected"
+            aria-live="polite"
+          ></p>
+          <div
+            id="languageDetectionInfo"
+            class="file-upload__detection"
+            aria-live="polite"
+          ></div>
+        </div>
+      </div>
+
+      <!-- Selección de idiomas -->
+      <div
+        class="language-selection flex flex-col gap-md animate-fadeInUp animate-delay-sm"
+      >
+        <div
+          class="language-selection__row flex flex-row gap-xl language-selector-responsive w-xs-100"
+        >
+          <div class="language-selection__group flex flex-col flex-1 w-xs-100">
+            <label for="sourceLanguage" class="language-selection__label">
+              Source language:
+            </label>
+            <select
+              id="sourceLanguage"
+              name="sourceLanguage"
+              class="select-base language-selection__select"
+              required
+              aria-describedby="sourceLanguageHelp"
+            >
+              <option value="" selected disabled>Select a language</option>
+              <option value="auto">Automatic detection</option>
+              <option value="BG">Bulgarian</option>
+              <option value="CS">Czech</option>
+              <option value="DA">Danish</option>
+              <option value="DE">German</option>
+              <option value="EL">Greek</option>
+              <option value="EN">English</option>
+              <option value="ES">Spanish</option>
+              <option value="ET">Estonian</option>
+              <option value="FI">Finnish</option>
+              <option value="FR">French</option>
+              <option value="HU">Hungarian</option>
+              <option value="IT">Italian</option>
+              <option value="JA">Japanese</option>
+              <option value="LT">Lithuanian</option>
+              <option value="LV">Latvian</option>
+              <option value="NL">Dutch</option>
+              <option value="PL">Polish</option>
+              <option value="PT">Portuguese</option>
+              <option value="RO">Romanian</option>
+              <option value="RU">Russian</option>
+              <option value="SK">Slovak</option>
+              <option value="SL">Slovenian</option>
+              <option value="SV">Swedish</option>
+              <option value="ZH">Chinese</option>
+            </select>
+            <p id="sourceLanguageHelp" class="language-selection__help">
+              Select the original language of the file or use automatic
+              detection
+            </p>
+          </div>
+          <div class="language-selection__group flex flex-col flex-1 w-xs-100">
+            <label for="targetLanguage" class="language-selection__label">
+              Target language:
+            </label>
+            <select
+              id="targetLanguage"
+              name="targetLanguage"
+              class="select-base language-selection__select"
+              required
+              aria-describedby="targetLanguageHelp"
+            >
+              <option value="" selected disabled>Select a language</option>
+              <option value="BG">Bulgarian</option>
+              <option value="CS">Czech</option>
+              <option value="DA">Danish</option>
+              <option value="DE">German</option>
+              <option value="EL">Greek</option>
+              <option value="EN">English</option>
+              <option value="ES">Spanish</option>
+              <option value="ET">Estonian</option>
+              <option value="FI">Finnish</option>
+              <option value="FR">French</option>
+              <option value="HU">Hungarian</option>
+              <option value="IT">Italian</option>
+              <option value="JA">Japanese</option>
+              <option value="LT">Lithuanian</option>
+              <option value="LV">Latvian</option>
+              <option value="NL">Dutch</option>
+              <option value="PL">Polish</option>
+              <option value="PT">Portuguese</option>
+              <option value="RO">Romanian</option>
+              <option value="RU">Russian</option>
+              <option value="SK">Slovak</option>
+              <option value="SL">Slovenian</option>
+              <option value="SV">Swedish</option>
+              <option value="ZH">Chinese</option>
+            </select>
+            <p id="targetLanguageHelp" class="language-selection__help">
+              Select the language you want to translate to
+            </p>
+          </div>
+        </div>
+        <div
+          class="language-selection__row language-selection__row--switch flex flex-row flex-xs-row justify-end justify-xs-start animate-fadeInUp animate-delay-md"
+        >
+          <div
+            class="language-selection__switch-group flex flex-row items-center gap-sm w-xs-100"
+          >
+            <label
+              for="autoDetectSwitch"
+              class="language-selection__switch-label"
+            >
+              Automatic language detection
+            </label>
+            <input
+              type="checkbox"
+              id="autoDetectSwitch"
+              class="md3-switch"
+              checked
+              aria-checked="true"
+              role="switch"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Botón de envío -->
+      <div
+        class="form__actions flex justify-end gap-md submit-button-responsive animate-fadeInUp animate-delay-md"
+      >
+        <button
+          type="submit"
+          class="button button--primary ripple"
+          id="translateButton"
+          disabled
+        >
+          <span class="button__text">Translate subtitle</span>
+          <span class="button__icon">
+            <svg aria-hidden="true" viewBox="0 0 24 24" width="24" height="24">
+              <path
+                d="M12.87 15.07l-2.54-2.51.03-.03A17.52 17.52 0 0014.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"
+              ></path>
+            </svg>
+          </span>
+        </button>
+      </div>
+    </form>
+  </section>
+
+  <!-- Sección de vista previa -->
+  <section id="preview" class="preview" aria-live="polite" hidden>
+    <h2 class="preview__title">File preview</h2>
+    <!-- Estadísticas de confianza -->
+    <div id="confidenceStats" class="confidence-stats" hidden></div>
+    <div
+      class="preview__content flex flex-row preview-content-responsive gap-lg"
+    >
+      <div class="preview__original flex flex-col flex-1">
+        <h3 class="preview__subtitle">Original content</h3>
+        <pre class="preview__text" id="originalPreview"></pre>
+      </div>
+      <div class="preview__translated flex flex-col flex-1">
+        <h3 class="preview__subtitle">Translated content</h3>
+        <pre class="preview__text" id="translatedPreview"></pre>
+      </div>
+    </div>
+    <div
+      class="preview__actions flex justify-end gap-md preview-actions-responsive"
+    >
+      <button
+        type="button"
+        class="button button--secondary"
+        id="downloadButton"
+      >
+        <span class="button__icon">
+          <svg aria-hidden="true" viewBox="0 0 24 24" width="24" height="24">
+            <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"></path>
+          </svg>
+        </span>
+        <span class="button__text">Download translated subtitles</span>
+      </button>
+      <button type="button" class="button button--text" id="copyButton">
+        <span class="button__icon">
+          <svg aria-hidden="true" viewBox="0 0 24 24" width="24" height="24">
+            <path
+              d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"
+            ></path>
+          </svg>
+        </span>
+        <span class="button__text">Copy to clipboard</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- Loader -->
+  <div class="loader" id="loader" hidden="hidden">
+    <div class="loader__spinner"></div>
+    <p class="loader__text">Translating your file...</p>
+  </div>
+</div>

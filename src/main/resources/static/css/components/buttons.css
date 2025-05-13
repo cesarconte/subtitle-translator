@@ -1,0 +1,165 @@
+/* Estilos para botones siguiendo Material Design 3 */
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-lg);
+  border-radius: var(--border-radius-pill);
+  font-weight: 500;
+  font-size: var(--font-size-base);
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  border: none;
+  position: relative;
+  overflow: hidden;
+  white-space: nowrap;
+  user-select: none;
+  /* Add ripple effect to all buttons */
+  transform: translate3d(0, 0, 0);
+}
+
+/* Botón primario */
+.button--primary {
+  background-color: var(--md-primary);
+  color: var(--md-on-primary);
+}
+
+.button--primary:hover,
+.button--primary:focus {
+  background-color: var(--md-primary-container);
+  box-shadow: var(--md-shadow-2);
+  transform: translateY(-1px);
+  color: var(--md-on-primary-container);
+  box-shadow: var(--md-shadow-2);
+}
+
+.button--primary:active {
+  transform: translateY(1px);
+  box-shadow: var(--md-shadow-1);
+}
+
+/* Botón secundario */
+.button--secondary {
+  background-color: var(--md-secondary-container);
+  color: var(--md-on-secondary-container);
+}
+
+.button--secondary:hover,
+.button--secondary:focus {
+  background-color: var(--md-secondary);
+  color: var(--md-on-secondary);
+  box-shadow: var(--md-shadow-2);
+}
+
+.button--secondary:active {
+  transform: translateY(1px);
+  box-shadow: var(--md-shadow-1);
+}
+
+/* Botón de texto */
+.button--text {
+  background-color: transparent;
+  color: var(--md-primary);
+  padding: var(--spacing-sm);
+}
+
+.button--text:hover,
+.button--text:focus {
+  background-color: rgba(var(--md-primary-rgb, 103, 80, 164), 0.05);
+}
+
+.button--text:active {
+  background-color: rgba(var(--md-primary-rgb, 103, 80, 164), 0.1);
+}
+
+/* Estado deshabilitado */
+.button:disabled,
+.button--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  box-shadow: none;
+  pointer-events: none;
+}
+
+/* Icono en botón */
+.button__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.button__icon svg {
+  width: 1.25em;
+  height: 1.25em;
+  fill: currentColor;
+}
+
+/* Texto en botón */
+/* .button__text {
+  Estilos adicionales si son necesarios
+} */
+
+/* Botón con icono sin texto */
+.button--icon-only {
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border-radius: var(--border-radius-circle);
+  justify-content: center;
+}
+
+.button--icon-only .button__icon {
+  margin: 0;
+}
+
+.button--icon-only .button__text {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* FAB (Floating Action Button) */
+.button--fab {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--border-radius-circle);
+  padding: 0;
+  position: fixed;
+  right: var(--spacing-lg);
+  bottom: var(--spacing-lg);
+  box-shadow: var(--md-shadow-3);
+  z-index: 10;
+}
+
+/* Tamaños de botones */
+.button--small {
+  padding: var(--spacing-xs) var(--spacing-md);
+  font-size: var(--font-size-sm);
+}
+
+.button--large {
+  padding: var(--spacing-md) var(--spacing-xl);
+  font-size: var(--font-size-lg);
+}
+
+/* Responsive */
+@media screen and (max-width: var(--breakpoint-sm)) {
+  .button {
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+
+  .button--fab {
+    right: var(--spacing-md);
+    bottom: var(--spacing-md);
+  }
+}

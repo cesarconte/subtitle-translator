@@ -1,0 +1,174 @@
+/* Animations and transitions for Material Design 3 components */
+
+/* Fade in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Fade in from bottom animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Fade in from top animation */
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Pulse animation for active elements */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Scale animation for buttons */
+@keyframes scaleIn {
+  from {
+    transform: scale(0.95);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+/* Ripple effect utility class */
+.ripple {
+  position: relative;
+  overflow: hidden;
+  transform: translate3d(0, 0, 0);
+}
+
+.ripple:after {
+  content: "";
+  display: block;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  background-image: radial-gradient(circle, #fff 10%, transparent 10.01%);
+  background-repeat: no-repeat;
+  background-position: 50%;
+  transform: scale(10, 10);
+  opacity: 0;
+  transition: transform var(--transition-fast), opacity var(--transition-normal);
+}
+
+.ripple:active:after {
+  transform: scale(0, 0);
+  opacity: 0.3;
+  transition: 0s;
+}
+
+/* Animation utility classes */
+.animate-fadeIn {
+  animation: fadeIn var(--transition-normal) ease-out forwards;
+}
+
+.animate-fadeInUp {
+  animation: fadeInUp var(--transition-normal) ease-out forwards;
+}
+
+.animate-fadeInDown {
+  animation: fadeInDown var(--transition-normal) ease-out forwards;
+}
+
+.animate-delay-xs {
+  animation-delay: 50ms;
+}
+
+.animate-delay-sm {
+  animation-delay: 100ms;
+}
+
+.animate-delay-md {
+  animation-delay: 150ms;
+}
+
+.animate-delay-lg {
+  animation-delay: 200ms;
+}
+
+.animate-delay-xl {
+  animation-delay: 300ms;
+}
+
+/* Nav link animations */
+@keyframes navLinkHover {
+  from {
+    width: 0;
+    opacity: 0;
+  }
+  to {
+    width: 80%;
+    opacity: 1;
+  }
+}
+
+@keyframes navLinkActive {
+  0% {
+    transform: scaleX(0);
+    opacity: 0;
+  }
+  100% {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+}
+
+@keyframes pulseNavActive {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 6px rgba(255, 255, 255, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+  }
+}
+
+/* Ripple effect for menu items */
+@keyframes rippleEffect {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+/* Shine effect animation */
+@keyframes shineEffect {
+  0% {
+    transform: translateX(-100%) rotate(35deg);
+  }
+  100% {
+    transform: translateX(100%) rotate(35deg);
+  }
+}
