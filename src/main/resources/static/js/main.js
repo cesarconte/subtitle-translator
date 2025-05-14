@@ -6,6 +6,7 @@ import { initFileUpload } from "./modules/fileUpload.js";
 import { initLanguageSelectors } from "./modules/languageSelectors.js";
 import { initPreviewer } from "./modules/previewer.js";
 import { initFormSubmission } from "./modules/formSubmission.js";
+import { initProgressTracker } from "./modules/progressTracker.js";
 import { configureTranslationService } from "./api/translationService.js";
 import { showErrorToast, showSuccessToast } from "./utils/toast.js";
 import navAnimation from "./modules/navAnimation.js";
@@ -17,6 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let languageSelector;
   let previewer;
   let formSubmitter;
+  let progressTracker;
 
   // Loaded file content
   let fileContent = null;
@@ -24,6 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Element to show/hide loader
   const loader = document.getElementById("loader");
+  const progressTrackerElement = document.getElementById("progressTracker");
 
   // Make sure the loader is hidden at startup
   if (loader) {
@@ -31,11 +34,29 @@ document.addEventListener("DOMContentLoaded", () => {
     loader.setAttribute("hidden", "");
   }
 
+  // Make sure the progress tracker is hidden at startup
+  if (progressTrackerElement) {
+    progressTrackerElement.hidden = true;
+    progressTrackerElement.setAttribute("hidden", "");
+  }
+
   // Configure the translation service (in production, this should be managed by the server)
   // NOTE: In a real environment, NEVER expose your API key in the frontend
   // For this example, we use an empty key, which should be replaced with a real one
   configureTranslationService({
     authKey: "", // En producción, esto debería venir del servidor
+  });
+
+  // Initialize progress tracker module
+  progressTracker = initProgressTracker({
+    progressTrackerId: "progressTracker",
+    progressBarId: "progressBar",
+    progressPercentageId: "progressPercentage",
+    progressStatusId: "progressStatus",
+    translatedCharsId: "translatedChars",
+    totalCharsId: "totalChars",
+    remainingTimeId: "remainingTime",
+    totalTimeId: "totalTime",
   });
 
   // Inicializar módulo de carga de archivos
@@ -90,6 +111,7 @@ document.addEventListener("DOMContentLoaded", () => {
     formId: "translationForm",
     submitButtonId: "translateButton",
     loaderId: "loader",
+    progressTracker: progressTracker, // Pass the progress tracker instance
     getFileContent: () => fileContent,
     getFileName: () => fileName,
     getLanguages: () => languageSelector.getSelectedLanguages(),
@@ -128,11 +150,21 @@ document.addEventListener("DOMContentLoaded", () => {
       showSuccessToast(
         `Translation completed with ${confidenceMessage} confidence!`
       );
+
+      // The progress tracker will still be visible in the background
+      // Let's keep it for a moment so the user can see the completion stats
+      // Alternatively, we could hide it immediately if that's the preferred behavior
+      setTimeout(() => {
+        if (progressTracker) progressTracker.hide();
+      }, 5000); // Hide after 5 seconds
     },
     onTranslationError: (error) => {
       // Actions in case of error
       if (loader) loader.hidden = true;
       showErrorToast(`Translation error: ${error.message}`);
+
+      // Progress tracker will show the error state
+      // We'll leave it visible so the user can see what went wrong
     },
   });
 

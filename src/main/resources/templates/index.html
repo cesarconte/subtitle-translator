@@ -243,4 +243,45 @@
     <div class="loader__spinner"></div>
     <p class="loader__text">Translating your file...</p>
   </div>
+
+  <!-- Progress Tracking -->
+  <div class="progress-tracker" id="progressTracker" hidden="hidden">
+    <h3 class="progress-tracker__title">Translation Progress</h3>
+
+    <!-- Status message -->
+    <p class="progress-tracker__status" id="progressStatus">
+      Preparing translation...
+    </p>
+
+    <!-- Progress bar -->
+    <div class="progress">
+      <div class="progress__bar" id="progressBar" style="width: 0%"></div>
+    </div>
+    <p class="progress__text">
+      <span id="progressPercentage">0</span>% completed
+    </p>
+
+    <!-- Stats container -->
+    <div class="progress-tracker__stats flex flex-row flex-xs-col gap-md">
+      <!-- Character count -->
+      <div class="progress-tracker__stat-group">
+        <h4 class="progress-tracker__stat-title">Character Count</h4>
+        <p class="progress-tracker__stat-value">
+          <span id="translatedChars">0</span> / <span id="totalChars">0</span>
+        </p>
+        <p class="progress-tracker__stat-label">characters translated</p>
+      </div>
+
+      <!-- Time estimates -->
+      <div class="progress-tracker__stat-group">
+        <h4 class="progress-tracker__stat-title">Time Estimate</h4>
+        <p class="progress-tracker__stat-value">
+          <span id="remainingTime">calculating...</span> remaining
+        </p>
+        <p class="progress-tracker__stat-label">
+          Total: <span id="totalTime">calculating...</span>
+        </p>
+      </div>
+    </div>
+  </div>
 </div>

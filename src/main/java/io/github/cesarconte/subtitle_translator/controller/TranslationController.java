@@ -4,7 +4,10 @@ import io.github.cesarconte.subtitle_translator.model.SubtitleBlock;
 import io.github.cesarconte.subtitle_translator.model.TranslationRequest;
 import io.github.cesarconte.subtitle_translator.model.TranslationResponse;
 import io.github.cesarconte.subtitle_translator.model.LanguageDetectionResponse;
+import io.github.cesarconte.subtitle_translator.model.TranslationProgress;
+import io.github.cesarconte.subtitle_translator.model.TranslationSession;
 import io.github.cesarconte.subtitle_translator.service.TranslationService;
+import io.github.cesarconte.subtitle_translator.service.ProgressTrackingService;
 import io.github.cesarconte.subtitle_translator.util.SrtParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,23 +30,74 @@ public class TranslationController {
 
     private final TranslationService translationService;
     private final SrtParser srtParser;
+    private final ProgressTrackingService progressTrackingService;
 
-    public TranslationController(TranslationService translationService, SrtParser srtParser) {
+    public TranslationController(
+            TranslationService translationService,
+            SrtParser srtParser,
+            ProgressTrackingService progressTrackingService) {
         this.translationService = translationService;
         this.srtParser = srtParser;
+        this.progressTrackingService = progressTrackingService;
     }
 
     /**
-     * Endpoint to translate subtitle files
+     * Endpoint to initialize a translation session and return a session ID
      *
      * @param request Translation request data
-     * @return Response with translated content
+     * @return Response with session ID for progress tracking
      */
-    @PostMapping("/subtitle")
-    public ResponseEntity<TranslationResponse> translateSubtitle(@RequestBody TranslationRequest request) {
+    @PostMapping("/init")
+    public ResponseEntity<TranslationSession> initTranslation(@RequestBody TranslationRequest request) {
         try {
             // Validate SRT content
             if (!srtParser.isValid(request.getSrtContent())) {
+                return ResponseEntity.badRequest().body(null);
+            }
+
+            // Calculate total characters for progress tracking
+            int totalChars = calculateTotalCharacters(request.getSrtContent());
+
+            // Start progress tracking and get session ID
+            String sessionId = progressTrackingService.startTracking(totalChars);
+
+            return ResponseEntity.ok(new TranslationSession(sessionId));
+        } catch (Exception e) {
+            logger.error("Error initializing translation", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+    /**
+     * Endpoint to check translation progress
+     *
+     * @param sessionId Translation session ID
+     * @return Current progress information
+     */
+    @GetMapping("/progress/{sessionId}")
+    public ResponseEntity<TranslationProgress> getProgress(@PathVariable String sessionId) {
+        TranslationProgress progress = progressTrackingService.getProgress(sessionId);
+        if (progress == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(progress);
+    }
+
+    /**
+     * Endpoint to translate subtitle files with progress tracking
+     *
+     * @param request   Translation request data
+     * @param sessionId Translation session ID for progress tracking
+     * @return Response with translated content
+     */
+    @PostMapping("/subtitle/{sessionId}")
+    public ResponseEntity<TranslationResponse> translateSubtitle(
+            @RequestBody TranslationRequest request,
+            @PathVariable String sessionId) {
+        try {
+            // Validate SRT content
+            if (!srtParser.isValid(request.getSrtContent())) {
+                progressTrackingService.completeTracking(sessionId, false, "Invalid SRT format");
                 return ResponseEntity
                         .badRequest()
                         .body(new TranslationResponse(false, "The file does not have a valid SRT format"));
@@ -56,9 +110,18 @@ public class TranslationController {
             String sourceLang = "auto".equals(request.getSourceLanguage()) ? null : request.getSourceLanguage();
             String targetLang = request.getTargetLanguage();
 
-            // Perform translation
-            List<SubtitleBlock> translatedSubtitles = translationService.translateSubtitles(
-                    subtitles, targetLang, sourceLang);
+            // Update progress to preparing phase
+            progressTrackingService.updateProgress(
+                    sessionId, "preparing", "Preparing content for translation...", 0);
+
+            // Perform translation with progress tracking
+            List<SubtitleBlock> translatedSubtitles = translationService.translateSubtitlesWithProgress(
+                    subtitles, targetLang, sourceLang, sessionId, progressTrackingService);
+
+            // Update progress to finalizing phase
+            int totalChars = progressTrackingService.getProgress(sessionId).getTotalChars();
+            progressTrackingService.updateProgress(
+                    sessionId, "finalizing", "Finalizing translation...", totalChars);
 
             // Generate translated SRT content
             String translatedContent = srtParser.generate(translatedSubtitles);
@@ -79,15 +142,34 @@ public class TranslationController {
             double averageConfidence = translatedSubtitles.isEmpty() ? 1.0
                     : totalConfidence / translatedSubtitles.size();
 
+            // Mark translation as complete in progress tracking
+            progressTrackingService.completeTracking(sessionId, true, "Translation completed");
+
             return ResponseEntity.ok(
                     new TranslationResponse(translatedContent, confidenceData, averageConfidence));
 
         } catch (Exception e) {
             logger.error("Error translating SRT file", e);
+            // Update progress with error
+            progressTrackingService.completeTracking(sessionId, false, e.getMessage());
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new TranslationResponse(false, "Error translating: " + e.getMessage()));
         }
+    }
+
+    /**
+     * Calculate total character count from SRT content for progress tracking
+     */
+    private int calculateTotalCharacters(String srtContent) {
+        List<SubtitleBlock> blocks = srtParser.parse(srtContent);
+        int totalChars = 0;
+        for (SubtitleBlock block : blocks) {
+            for (String line : block.getText()) {
+                totalChars += line.length();
+            }
+        }
+        return totalChars;
     }
 
     /**

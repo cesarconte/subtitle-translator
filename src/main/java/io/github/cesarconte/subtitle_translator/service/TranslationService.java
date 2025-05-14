@@ -34,7 +34,7 @@ public class TranslationService {
     private String apiUrl;
 
     private static final String SUBTITLE_SEPARATOR = "<SUBT_DIV>";
-    private static final int GROUP_SIZE = 20; // Number of subtitles per request
+    private static final int GROUP_SIZE = 10; // Reduced group size for more frequent progress updates
 
     private static LanguageDetector languageDetector;
     private static List<LanguageProfile> languageProfiles;
@@ -100,6 +100,103 @@ public class TranslationService {
         }
 
         return (String) translations.get(0).get("text");
+    }
+
+    /**
+     * Translates a list of subtitle blocks with progress tracking
+     *
+     * @param subtitles       List of subtitle blocks
+     * @param targetLang      Target language code
+     * @param sourceLang      Source language code (can be "auto" for automatic
+     *                        detection)
+     * @param sessionId       Session ID for progress tracking
+     * @param progressService Progress tracking service
+     * @return List of translated subtitle blocks with confidence scores
+     */
+    public List<SubtitleBlock> translateSubtitlesWithProgress(
+            List<SubtitleBlock> subtitles,
+            String targetLang,
+            String sourceLang,
+            String sessionId,
+            ProgressTrackingService progressService) {
+        // Extract all subtitle texts and calculate total characters
+        List<String> textsToTranslate = new ArrayList<>();
+        int totalChars = 0;
+
+        for (SubtitleBlock subtitle : subtitles) {
+            String text = String.join("\n", subtitle.getText());
+            textsToTranslate.add(text);
+            totalChars += text.length();
+        }
+
+        // Update progress tracking with total characters
+        progressService.updateProgress(sessionId, "preparing",
+                "Preparing content for translation...", 0);
+
+        // Save original texts to calculate confidence later
+        List<String> originalTexts = new ArrayList<>(textsToTranslate);
+
+        // Group texts to minimize the number of API calls but still provide regular
+        // updates
+        List<List<String>> groups = new ArrayList<>();
+        for (int i = 0; i < textsToTranslate.size(); i += GROUP_SIZE) {
+            groups.add(textsToTranslate.subList(
+                    i,
+                    Math.min(i + GROUP_SIZE, textsToTranslate.size())));
+        }
+
+        // Translate each group with progress updates
+        List<String> allTranslatedTexts = new ArrayList<>();
+        int translatedChars = 0;
+        int groupIndex = 0;
+
+        for (List<String> group : groups) {
+            // Update progress tracker
+            int groupTotalChars = group.stream().mapToInt(String::length).sum();
+
+            progressService.updateProgress(sessionId, "translating",
+                    String.format("Translating block %d of %d...", groupIndex + 1, groups.size()),
+                    translatedChars);
+
+            // Translate the group
+            String text = String.join(SUBTITLE_SEPARATOR, group);
+            String translatedText = translateText(text, targetLang, sourceLang);
+            String[] translatedTextsInGroup = translatedText.split(SUBTITLE_SEPARATOR);
+
+            // Process responses
+            for (String translated : translatedTextsInGroup) {
+                allTranslatedTexts.add(translated);
+            }
+
+            // Update translated character count for progress
+            translatedChars += groupTotalChars;
+            groupIndex++;
+        }
+
+        // Create new subtitles with translated text and calculate confidence
+        List<SubtitleBlock> translatedSubtitles = new ArrayList<>();
+        for (int i = 0; i < subtitles.size(); i++) {
+            SubtitleBlock original = subtitles.get(i);
+            String translatedText = i < allTranslatedTexts.size() ? allTranslatedTexts.get(i) : "";
+
+            // Calculate confidence score
+            String originalText = i < originalTexts.size() ? originalTexts.get(i) : "";
+            double confidenceScore = ConfidenceCalculator.calculateConfidence(originalText, translatedText);
+
+            // Create subtitle block with confidence score
+            SubtitleBlock translated = new SubtitleBlock(
+                    original.getId(),
+                    original.getTimeCode(),
+                    translatedText.trim().split("\n"),
+                    confidenceScore);
+
+            translatedSubtitles.add(translated);
+        }
+
+        // Final progress update
+        progressService.updateProgress(sessionId, "finalizing", "Finalizing translation...", totalChars);
+
+        return translatedSubtitles;
     }
 
     /**

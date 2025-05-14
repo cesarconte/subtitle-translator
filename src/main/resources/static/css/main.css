@@ -21,6 +21,7 @@
 @import url("components/confidence.css");
 @import url("components/navbar.css");
 @import url("components/header.css");
+@import url("components/progress-tracker.css");
 
 /* Páginas específicas */
 @import url("pages/index.css");

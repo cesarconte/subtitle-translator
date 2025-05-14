@@ -3,6 +3,8 @@
  * @module api/translationService
  */
 
+import { parseSRT } from "../utils/srtParser.js";
+
 /**
  * URL base de la API de DeepL
  * @constant {string}
@@ -20,6 +22,10 @@ let API_KEY = "";
  * @typedef {Object} DeepLOptions
  * @property {string} authKey - API key
  */
+
+// Translation session management
+let currentSessionId = null;
+let progressCheckInterval = null;
 
 /**
  * Configures the translation service
@@ -157,17 +163,111 @@ export async function translateSubtitles(
  */
 
 /**
- * Traduce un archivo de subtítulos SRT usando la API del backend
+ * Initialize a translation session for progress tracking
+ *
+ * @param {string} srtContent - SRT content to translate
+ * @returns {Promise<string>} - Session ID for progress tracking
+ */
+async function initTranslationSession(srtContent) {
+  try {
+    const response = await fetch("/api/translate/init", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ srtContent }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error HTTP ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data.sessionId;
+  } catch (error) {
+    console.error("Error initializing translation session:", error);
+    throw error;
+  }
+}
+
+/**
+ * Check translation progress for a session
+ *
+ * @param {string} sessionId - Session ID for translation
+ * @returns {Promise<Object>} - Progress information
+ */
+async function checkTranslationProgress(sessionId) {
+  try {
+    const response = await fetch(`/api/translate/progress/${sessionId}`);
+
+    if (!response.ok) {
+      if (response.status === 404) {
+        throw new Error("Session not found");
+      }
+      throw new Error(`Error HTTP ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error checking translation progress:", error);
+    throw error;
+  }
+}
+
+/**
+ * Traduce un archivo de subtítulos SRT usando la API del backend con seguimiento de progreso
  *
  * @param {string} srtContent - Contenido del archivo SRT
  * @param {string} targetLang - Código de idioma destino
  * @param {string} sourceLang - Código de idioma origen (puede ser "auto")
+ * @param {function} [progressCallback] - Optional callback for progress updates
  * @returns {Promise<TranslationResult>} Translation result
  */
-export async function translateSRT(srtContent, targetLang, sourceLang) {
+export async function translateSRT(
+  srtContent,
+  targetLang,
+  sourceLang,
+  progressCallback
+) {
   try {
-    // Llamar a la API del backend
-    const response = await fetch("/api/translate/subtitle", {
+    // Clear any existing progress check interval
+    if (progressCheckInterval) {
+      clearInterval(progressCheckInterval);
+      progressCheckInterval = null;
+    }
+
+    // Initialize a translation session
+    const sessionId = await initTranslationSession(srtContent);
+    currentSessionId = sessionId;
+
+    // Set up progress checking interval if a callback is provided
+    if (typeof progressCallback === "function") {
+      // Check progress every 500ms
+      progressCheckInterval = setInterval(async () => {
+        try {
+          // If we don't have a current session, stop checking
+          if (!currentSessionId) {
+            clearInterval(progressCheckInterval);
+            progressCheckInterval = null;
+            return;
+          }
+
+          const progress = await checkTranslationProgress(currentSessionId);
+          progressCallback(progress);
+
+          // If the translation is complete or has an error, stop checking
+          if (progress.phase === "completed" || progress.phase === "error") {
+            clearInterval(progressCheckInterval);
+            progressCheckInterval = null;
+          }
+        } catch (err) {
+          console.error("Error checking progress:", err);
+        }
+      }, 500);
+    }
+
+    // Call the API to translate with the session ID
+    const response = await fetch(`/api/translate/subtitle/${sessionId}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -178,6 +278,13 @@ export async function translateSRT(srtContent, targetLang, sourceLang) {
         sourceLanguage: sourceLang,
       }),
     });
+
+    // Stop progress checking now that translation is complete
+    if (progressCheckInterval) {
+      clearInterval(progressCheckInterval);
+      progressCheckInterval = null;
+    }
+    currentSessionId = null;
 
     if (!response.ok) {
       let errorData;
@@ -204,8 +311,51 @@ export async function translateSRT(srtContent, targetLang, sourceLang) {
     };
   } catch (error) {
     console.error("Error traduciendo subtítulos:", error);
+
+    // Ensure progress checking is stopped
+    if (progressCheckInterval) {
+      clearInterval(progressCheckInterval);
+      progressCheckInterval = null;
+    }
+    currentSessionId = null;
+
+    // Notify error in progress
+    if (typeof progressCallback === "function") {
+      progressCallback({
+        phase: "error",
+        message: `Error: ${error.message}`,
+        error,
+      });
+    }
+
     throw error;
   }
+}
+
+/**
+ * Parse SRT content to get block count and character count
+ * This helps with progress tracking
+ *
+ * @param {string} srtContent - The SRT content to parse
+ * @returns {Object} Object containing blocks and character count
+ */
+function parseSrtContent(srtContent) {
+  // Simple parsing of SRT blocks and character counting
+  // Note: This is a simplified implementation that doesn't do full parsing
+  const blocks = srtContent
+    .split(/\r?\n\r?\n/)
+    .filter((block) => block.trim() !== "");
+
+  let charCount = 0;
+  for (const block of blocks) {
+    const lines = block.split(/\r?\n/);
+    // Skip the first two lines (index and timing)
+    for (let i = 2; i < lines.length; i++) {
+      charCount += lines[i].length;
+    }
+  }
+
+  return { blocks, charCount };
 }
 
 /**
@@ -221,4 +371,19 @@ export async function detectLanguage(srtContent) {
   });
   const data = await response.json();
   return data;
+}
+
+/**
+ * Cancel the current translation if one is in progress
+ */
+export function cancelTranslation() {
+  if (currentSessionId) {
+    if (progressCheckInterval) {
+      clearInterval(progressCheckInterval);
+      progressCheckInterval = null;
+    }
+    currentSessionId = null;
+    return true;
+  }
+  return false;
 }

@@ -13,6 +13,7 @@ import { showErrorToast } from "../utils/toast.js";
  * @property {string} formId - ID of the form
  * @property {string} submitButtonId - ID of the submit button
  * @property {string} loaderId - ID of the loader element
+ * @property {Object} [progressTracker] - Progress tracker instance
  * @property {Function} onTranslationStart - Callback when translation starts
  * @property {Function} onTranslationSuccess - Callback when translation is successful
  * @property {Function} onTranslationError - Callback when there's an error in translation
@@ -118,12 +119,25 @@ export function initFormSubmission(options) {
       options.onTranslationStart();
     }
 
+    // Initialize progress tracking if available
+    if (options.progressTracker) {
+      options.progressTracker.start();
+    }
+
     try {
-      // Call the API to translate the SRT file
+      // Define a progress callback if we have a progress tracker
+      const progressCallback = options.progressTracker
+        ? (progressData) => {
+            options.progressTracker.handleProgressUpdate(progressData);
+          }
+        : null;
+
+      // Call the API to translate the SRT file with progress callback
       const result = await translateSRT(
         fileContent,
         languages.targetLanguage,
-        languages.sourceLanguage
+        languages.sourceLanguage,
+        progressCallback
       );
 
       // Call the success callback with the full response (including confidence information)
@@ -139,6 +153,11 @@ export function initFormSubmission(options) {
       }
     } catch (error) {
       console.error("Translation error:", error);
+
+      // Show error in progress tracker if available
+      if (options.progressTracker) {
+        options.progressTracker.complete(false, `Error: ${error.message}`);
+      }
 
       // Call error callback
       if (typeof options.onTranslationError === "function") {

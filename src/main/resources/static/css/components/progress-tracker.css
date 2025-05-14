@@ -1,0 +1,121 @@
+/* Progress Tracking Component */
+
+.progress-tracker {
+  width: 100%;
+  background-color: var(--md-surface);
+  border-radius: var(--border-radius-large);
+  box-shadow: var(--shadow-small);
+  padding: var(--spacing-lg);
+  margin: var(--spacing-md) 0;
+}
+
+.progress-tracker[hidden] {
+  display: none;
+}
+
+.progress-tracker__title {
+  font-size: var(--font-size-lg);
+  color: var(--md-on-surface);
+  margin-bottom: var(--spacing-md);
+}
+
+.progress-tracker__status {
+  font-size: var(--font-size-base);
+  color: var(--md-primary);
+  margin-bottom: var(--spacing-md);
+  font-weight: 500;
+}
+
+.progress-tracker__stats {
+  margin-top: var(--spacing-lg);
+}
+
+.progress-tracker__stat-group {
+  flex: 1;
+  background-color: var(--md-surface-variant);
+  border-radius: var(--border-radius-medium);
+  padding: var(--spacing-md);
+}
+
+.progress-tracker__stat-title {
+  font-size: var(--font-size-sm);
+  color: var(--md-on-surface-variant);
+  margin-bottom: var(--spacing-xs);
+  font-weight: 500;
+}
+
+.progress-tracker__stat-value {
+  font-size: var(--font-size-lg);
+  color: var(--md-on-surface);
+  margin-bottom: var(--spacing-xs);
+  font-weight: 600;
+}
+
+.progress-tracker__stat-label {
+  font-size: var(--font-size-xs);
+  color: var(--md-on-surface-variant);
+}
+
+/* Animated elements */
+.progress-tracker__status.progress-tracker__status--active {
+  position: relative;
+  display: inline-block;
+}
+
+.progress-tracker__status.progress-tracker__status--active::after {
+  content: "...";
+  position: absolute;
+  width: 1em;
+  height: 1em;
+  right: -1.5em;
+  bottom: 0;
+  animation: ellipsis 1.5s infinite;
+}
+
+@keyframes ellipsis {
+  0% {
+    content: ".";
+  }
+  33% {
+    content: "..";
+  }
+  66% {
+    content: "...";
+  }
+}
+
+/* Status indicators */
+.progress-tracker__status--preparing {
+  color: var(--md-tertiary);
+}
+
+.progress-tracker__status--translating {
+  color: var(--md-primary);
+}
+
+.progress-tracker__status--finalizing {
+  color: var(--md-secondary);
+}
+
+.progress-tracker__status--completed {
+  color: var(--md-success);
+}
+
+.progress-tracker__status--error {
+  color: var(--md-error);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .progress-tracker__stats {
+    flex-direction: column;
+  }
+
+  .progress-tracker__stat-group {
+    margin-bottom: var(--spacing-md);
+  }
+
+  .progress-tracker__stat-group:last-child {
+    margin-bottom: 0;
+  }
+}

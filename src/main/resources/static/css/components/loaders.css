@@ -124,10 +124,11 @@
 /* Progreso */
 .progress {
   width: 100%;
-  height: 4px;
+  height: 10px;
   background-color: var(--md-surface-variant);
   border-radius: var(--border-radius-pill);
   overflow: hidden;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .progress__bar {
@@ -135,6 +136,7 @@
   background-color: var(--md-primary);
   border-radius: var(--border-radius-pill);
   transition: width var(--transition-normal);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .progress__text {
