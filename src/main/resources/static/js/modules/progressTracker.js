@@ -104,30 +104,56 @@ export function initProgressTracker(options) {
   };
 
   /**
-   * Show the progress tracker
+   * Show the progress tracker with animation
    */
   const show = () => {
     if (progressTracker) {
+      // Remove the hidden attribute
       progressTracker.hidden = false;
+
+      // Force a reflow to ensure the CSS transition works
+      progressTracker.offsetHeight;
+
+      // Apply visible styles
+      progressTracker.style.opacity = "1";
+      progressTracker.style.transform = "translateY(0)";
+
       isActive = true;
     }
   };
 
   /**
-   * Hide the progress tracker
+   * Hide the progress tracker with smooth animation
    */
   const hide = () => {
     if (progressTracker) {
-      progressTracker.hidden = true;
-      isActive = false;
+      // First fade out
+      progressTracker.style.opacity = "0";
+      progressTracker.style.transform = "translateY(10px)";
+
+      // Then hide after transition completes
+      setTimeout(() => {
+        progressTracker.hidden = true;
+        isActive = false;
+      }, 300); // Must match the duration in CSS transition
     }
   };
 
   /**
-   * Reset the progress tracker to initial state
+   * Reset the progress tracker to initial state with animations
    */
   const reset = () => {
-    if (progressBar) progressBar.style.width = "0%";
+    // Reset progress bar with animation
+    if (progressBar) {
+      // Apply transition for smooth reset
+      progressBar.style.transition = "width 0.3s ease-out";
+      progressBar.style.width = "0%";
+      // Reset transition after a brief delay (smoother animation on next update)
+      setTimeout(() => {
+        progressBar.style.transition = "width 0.5s ease";
+      }, 300);
+    }
+
     if (progressPercentage) progressPercentage.textContent = "0";
     if (progressStatus) {
       progressStatus.textContent = "Preparing translation...";
@@ -151,9 +177,23 @@ export function initProgressTracker(options) {
   /**
    * Handle progress updates from the backend
    * @param {Object} progressData - Progress data from backend
+   * @param {Object} [options] - Additional options
+   * @param {HTMLElement} [options.loader] - Loader element to coordinate with
    */
-  const handleProgressUpdate = (progressData) => {
-    if (!isActive || !progressData) return;
+  const handleProgressUpdate = (progressData, options = {}) => {
+    if (!progressData) return;
+
+    // If progress data exists but tracker isn't active yet, activate it
+    if (!isActive && progressData.phase !== "starting") {
+      start();
+
+      // Hide loader if provided when switching to progress tracker
+      if (options.loader) {
+        options.loader.hidden = true;
+      }
+    }
+
+    if (!isActive) return;
 
     // Update progress bar and percentage
     const progress = progressData.progress || 0;

@@ -9,8 +9,14 @@
   margin: var(--spacing-md) 0;
 }
 
+.progress-tracker {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
 .progress-tracker[hidden] {
   display: none;
+  opacity: 0;
+  transform: translateY(10px);
 }
 
 .progress-tracker__title {

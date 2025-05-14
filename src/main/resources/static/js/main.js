@@ -117,7 +117,11 @@ document.addEventListener("DOMContentLoaded", () => {
     getLanguages: () => languageSelector.getSelectedLanguages(),
     onTranslationStart: () => {
       // Actions when translation starts
+      // Show the loader immediately for instant feedback
       if (loader) loader.hidden = false;
+
+      // Initially hide the progress tracker - it will be shown on first progress update
+      if (progressTracker) progressTracker.hide();
 
       // Hide previous preview if it exists
       if (previewer) {

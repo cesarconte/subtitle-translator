@@ -119,16 +119,17 @@ export function initFormSubmission(options) {
       options.onTranslationStart();
     }
 
-    // Initialize progress tracking if available
-    if (options.progressTracker) {
-      options.progressTracker.start();
-    }
+    // We'll start with the loader for immediate feedback
+    // The progress tracker will be shown when we get the first progress update
 
     try {
       // Define a progress callback if we have a progress tracker
       const progressCallback = options.progressTracker
         ? (progressData) => {
-            options.progressTracker.handleProgressUpdate(progressData);
+            // Pass the loader to coordinate the transition
+            options.progressTracker.handleProgressUpdate(progressData, {
+              loader: loader,
+            });
           }
         : null;
 
