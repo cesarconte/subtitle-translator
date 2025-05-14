@@ -12,6 +12,7 @@
  * @property {string} downloadButtonId - ID of the download button
  * @property {string} copyButtonId - ID of the copy to clipboard button
  * @property {string} confidenceStatsId - ID of the element for confidence statistics
+ * @property {Function} [onDownload] - Callback function to execute when the user downloads the translated file
  */
 
 import { copyToClipboard } from "../utils/clipboard.js";
@@ -150,6 +151,11 @@ export function initPreviewer(options) {
 
       // Release the URL
       setTimeout(() => URL.revokeObjectURL(url), 100);
+
+      // Trigger the onDownload callback if provided
+      if (typeof options.onDownload === "function") {
+        options.onDownload();
+      }
 
       showSuccessToast("Download started");
     });

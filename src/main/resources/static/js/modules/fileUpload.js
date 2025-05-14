@@ -14,6 +14,7 @@ import { detectLanguage } from "../api/translationService.js";
  * @property {string} fileInputId - ID of the file input
  * @property {string} fileSelectedId - ID of the element to display the file name
  * @property {Function} onFileLoaded - Callback when a file is loaded
+ * @property {Function} onClearSelection - Callback when file selection is cleared
  */
 
 /**
@@ -286,6 +287,11 @@ export function initFileUpload(options) {
     // Show feedback to the user
     if (showFeedback) {
       showErrorToast("File removed");
+    }
+
+    // Call the onClearSelection callback
+    if (typeof options.onClearSelection === "function") {
+      options.onClearSelection();
     }
   }
 

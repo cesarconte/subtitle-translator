@@ -13,6 +13,42 @@ import navAnimation from "./modules/navAnimation.js";
 
 // Esperar a que el DOM esté completamente cargado
 document.addEventListener("DOMContentLoaded", () => {
+  // Función para resetear todos los formularios y valores cuando se carga la página
+  function resetAllForms() {
+    // Resetear todos los formularios
+    document.querySelectorAll("form").forEach((form) => {
+      form.reset();
+    });
+
+    // Asegurarse de que los select tengan su primer valor
+    document.querySelectorAll("select").forEach((select) => {
+      select.selectedIndex = 0;
+    });
+
+    // Asegurarse de que el contenido del archivo se limpie
+    const fileSelectedElement = document.getElementById("fileSelected");
+    if (fileSelectedElement) {
+      fileSelectedElement.innerHTML = "";
+      fileSelectedElement.setAttribute("aria-hidden", "true");
+    }
+
+    // Resetear el estado de detección de idioma
+    const detectionInfo = document.getElementById("languageDetectionInfo");
+    if (detectionInfo) {
+      detectionInfo.textContent = "";
+      detectionInfo.className = "file-upload__detection";
+    }
+
+    // Resetear el contenido de la vista previa
+    const preview = document.getElementById("preview");
+    if (preview) {
+      preview.hidden = true;
+    }
+  }
+
+  // Llamar a la función de reseteo al cargar la página
+  resetAllForms();
+
   // Variables to store module instances
   let fileUploader;
   let languageSelector;
@@ -64,6 +100,12 @@ document.addEventListener("DOMContentLoaded", () => {
     dropZoneId: "dropZone",
     fileInputId: "subtitleFile",
     fileSelectedId: "fileSelected",
+    onClearSelection: () => {
+      // Reset language selectors when file selection is cleared
+      if (languageSelector) {
+        languageSelector.resetLanguages();
+      }
+    },
     onFileLoaded: (content, file) => {
       // If content is null, it means the file was removed
       if (content === null) {
@@ -83,6 +125,11 @@ document.addEventListener("DOMContentLoaded", () => {
         // Hide progress tracker if it's visible
         if (progressTracker) {
           progressTracker.hide();
+        }
+
+        // Reset language selectors to their default values when a file is removed
+        if (languageSelector) {
+          languageSelector.resetLanguages();
         }
 
         return;
@@ -127,6 +174,28 @@ document.addEventListener("DOMContentLoaded", () => {
     downloadButtonId: "downloadButton",
     copyButtonId: "copyButton",
     confidenceStatsId: "confidenceStats",
+    onDownload: () => {
+      // Reset language selectors after download completes
+      if (languageSelector) {
+        languageSelector.resetLanguages();
+      }
+
+      // Clear file content and name since the task is complete
+      fileContent = null;
+      fileName = null;
+
+      // Also clear the file input and selection display
+      if (fileUploader) {
+        fileUploader.clearFileSelection(false); // Don't show the "File removed" toast
+      }
+
+      // Hide the preview after a delay to give feedback to the user
+      setTimeout(() => {
+        if (previewer) {
+          previewer.hidePreview();
+        }
+      }, 2000);
+    },
   });
 
   // Initialize form submission module
@@ -184,6 +253,9 @@ document.addEventListener("DOMContentLoaded", () => {
       setTimeout(() => {
         if (progressTracker) progressTracker.hide();
       }, 5000); // Hide after 5 seconds
+
+      // No reseteamos los idiomas aquí para permitir que el usuario vea la traducción,
+      // los selectores se resetearán cuando el usuario descargue el archivo o elimine el archivo cargado
     },
     onTranslationError: (error) => {
       // Actions in case of error
@@ -192,6 +264,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Progress tracker will show the error state
       // We'll leave it visible so the user can see what went wrong
+
+      // Después de un error, permitimos al usuario corregir y volver a intentar,
+      // por lo que no reseteamos los idiomas aquí
     },
   });
 

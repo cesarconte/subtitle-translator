@@ -25,6 +25,10 @@ export function initLanguageSelectors(options) {
     return;
   }
 
+  // Reset selectors to initial state on page load
+  sourceSelect.selectedIndex = 0;
+  targetSelect.selectedIndex = 0;
+
   /**
    * Previene que se seleccione el mismo idioma en ambos selectores
    */
@@ -150,10 +154,37 @@ export function initLanguageSelectors(options) {
   // Aplicar validación inicial
   preventDuplicateLanguage();
 
+  /**
+   * Restablece los selectores de idioma a sus valores iniciales/predeterminados
+   */
+  const resetLanguages = () => {
+    // Seleccionar la primera opción desactivada (normalmente "Select a language")
+    sourceSelect.selectedIndex = 0;
+    targetSelect.selectedIndex = 0;
+
+    // Reactivar todas las opciones
+    Array.from(sourceSelect.options).forEach((option) => {
+      option.disabled = false;
+    });
+
+    Array.from(targetSelect.options).forEach((option) => {
+      option.disabled = false;
+    });
+
+    // Notificar el cambio
+    if (typeof options.onChange === "function") {
+      options.onChange({
+        sourceLanguage: sourceSelect.value,
+        targetLanguage: targetSelect.value,
+      });
+    }
+  };
+
   // Retornar API pública
   return {
     getSelectedLanguages,
     setSelectedLanguages,
     isValid,
+    resetLanguages,
   };
 }
