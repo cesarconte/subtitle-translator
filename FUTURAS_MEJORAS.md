@@ -7,7 +7,7 @@ Este documento recopila todas las posibles mejoras y nuevas funcionalidades para
 ### Prioridad Alta
 
 - [ ] **Vista previa en tiempo real**: Visualización dividida que muestre texto original y traducción lado a lado mientras se realiza la traducción
-- [ ] **Mensajes de estado mejorados**: Mostrar progreso detallado durante la traducción
+- [x] **Mensajes de estado mejorados**: Mostrar progreso detallado durante la traducción
 - [x] **Autodetección de idioma**: Identificar automáticamente el idioma del archivo subido (Implementado: 13 de mayo de 2025)
 - [x] **Mejora de autodetección**: Agregar opción para habilitar/deshabilitar la detección automática (Implementado: 13 de mayo de 2025)
 
@@ -31,8 +31,8 @@ Este documento recopila todas las posibles mejoras y nuevas funcionalidades para
 
 ### Prioridad Alta
 
-- [ ] **Historial de traducciones**:
-  - [ ] Guardar traducciones previas
+- [x] **Historial de traducciones**:
+  - [x] Guardar traducciones previas (Implementado: 14 de mayo de 2025)
   - [ ] Acceso rápido a trabajos recientes
 - [ ] **Soporte para múltiples formatos de subtítulos**:
   - [ ] .ass

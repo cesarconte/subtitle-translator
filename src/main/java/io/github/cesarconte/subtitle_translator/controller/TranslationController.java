@@ -1,12 +1,14 @@
 package io.github.cesarconte.subtitle_translator.controller;
 
 import io.github.cesarconte.subtitle_translator.model.SubtitleBlock;
+import io.github.cesarconte.subtitle_translator.model.Translation;
 import io.github.cesarconte.subtitle_translator.model.TranslationRequest;
 import io.github.cesarconte.subtitle_translator.model.TranslationResponse;
 import io.github.cesarconte.subtitle_translator.model.LanguageDetectionResponse;
 import io.github.cesarconte.subtitle_translator.model.TranslationProgress;
 import io.github.cesarconte.subtitle_translator.model.TranslationSession;
 import io.github.cesarconte.subtitle_translator.service.TranslationService;
+import io.github.cesarconte.subtitle_translator.service.TranslationStorageService;
 import io.github.cesarconte.subtitle_translator.service.ProgressTrackingService;
 import io.github.cesarconte.subtitle_translator.util.SrtParser;
 import org.slf4j.Logger;
@@ -18,6 +20,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * REST controller to manage subtitle translations
@@ -31,14 +35,19 @@ public class TranslationController {
     private final TranslationService translationService;
     private final SrtParser srtParser;
     private final ProgressTrackingService progressTrackingService;
+    private final TranslationStorageService translationStorageService;
+    private final ObjectMapper objectMapper;
 
     public TranslationController(
             TranslationService translationService,
             SrtParser srtParser,
-            ProgressTrackingService progressTrackingService) {
+            ProgressTrackingService progressTrackingService,
+            TranslationStorageService translationStorageService) {
         this.translationService = translationService;
         this.srtParser = srtParser;
         this.progressTrackingService = progressTrackingService;
+        this.translationStorageService = translationStorageService;
+        this.objectMapper = new ObjectMapper();
     }
 
     /**
@@ -103,6 +112,48 @@ public class TranslationController {
                         .body(new TranslationResponse(false, "The file does not have a valid SRT format"));
             }
 
+            // Check if we already have this translation in the database
+            Optional<Translation> existingTranslation = translationStorageService.findExistingTranslation(
+                    request.getSrtContent(),
+                    request.getSourceLanguage(),
+                    request.getTargetLanguage());
+
+            if (existingTranslation.isPresent()) {
+                logger.info("Found existing translation in database. Returning cached result.");
+
+                // Update progress to 100% immediately since we have the translation
+                int totalChars = calculateTotalCharacters(request.getSrtContent());
+                progressTrackingService.updateProgress(
+                        sessionId, "cached", "Using cached translation...", 0);
+                progressTrackingService.updateProgress(
+                        sessionId, "cached", "Translation found in database", totalChars);
+
+                Translation translation = existingTranslation.get();
+                List<TranslationResponse.SubtitleConfidence> confidenceData = new ArrayList<>();
+
+                try {
+                    // Convert JSON string to list of SubtitleConfidence objects
+                    if (translation.getConfidenceData() != null && !translation.getConfidenceData().isEmpty()) {
+                        confidenceData = objectMapper.readValue(
+                                translation.getConfidenceData(),
+                                objectMapper.getTypeFactory().constructCollectionType(
+                                        List.class,
+                                        TranslationResponse.SubtitleConfidence.class));
+                    }
+                } catch (Exception e) {
+                    logger.warn("Error parsing confidence data from database", e);
+                    // Continue with empty confidence data if there's an error
+                }
+
+                // Mark translation as complete in progress tracking
+                progressTrackingService.completeTracking(sessionId, true, "Cached translation retrieved");
+
+                return ResponseEntity.ok(
+                        new TranslationResponse(translation.getTranslatedContent(),
+                                confidenceData,
+                                translation.getAverageConfidence()));
+            }
+
             // Parse content
             List<SubtitleBlock> subtitles = srtParser.parse(request.getSrtContent());
 
@@ -141,6 +192,36 @@ public class TranslationController {
             // Calculate average confidence
             double averageConfidence = translatedSubtitles.isEmpty() ? 1.0
                     : totalConfidence / translatedSubtitles.size();
+
+            // Store translation in database
+            String confidenceDataJson;
+            try {
+                confidenceDataJson = objectMapper.writeValueAsString(confidenceData);
+            } catch (Exception e) {
+                logger.warn("Error serializing confidence data", e);
+                confidenceDataJson = "[]";
+            }
+
+            // Calculate confidence level
+            String confidenceLevel;
+            if (averageConfidence >= 0.8) {
+                confidenceLevel = "high";
+            } else if (averageConfidence >= 0.5) {
+                confidenceLevel = "medium";
+            } else {
+                confidenceLevel = "low";
+            }
+
+            // Save the translation to the database
+            translationStorageService.saveTranslation(
+                    request.getFileName() != null ? request.getFileName() : "subtitle.srt",
+                    request.getSrtContent(),
+                    request.getSourceLanguage(),
+                    request.getTargetLanguage(),
+                    translatedContent,
+                    confidenceDataJson,
+                    averageConfidence,
+                    confidenceLevel);
 
             // Mark translation as complete in progress tracking
             progressTrackingService.completeTracking(sessionId, true, "Translation completed");

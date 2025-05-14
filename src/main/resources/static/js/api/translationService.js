@@ -23,9 +23,30 @@ let API_KEY = "";
  * @property {string} authKey - API key
  */
 
+// Variable para almacenar el nombre del archivo seleccionado
+let currentFileName = "subtitle.srt";
+
 // Translation session management
 let currentSessionId = null;
 let progressCheckInterval = null;
+
+/**
+ * Establece el nombre del archivo actual
+ *
+ * @param {string} fileName - Nombre del archivo
+ */
+export function setFileName(fileName) {
+  currentFileName = fileName || "subtitle.srt";
+}
+
+/**
+ * Obtiene el nombre del archivo actual
+ *
+ * @returns {string} Nombre del archivo
+ */
+function getFileName() {
+  return currentFileName;
+}
 
 /**
  * Configures the translation service
@@ -276,6 +297,7 @@ export async function translateSRT(
         srtContent,
         targetLanguage: targetLang,
         sourceLanguage: sourceLang,
+        fileName: getFileName(), // Get the file name from the currently selected file
       }),
     });
 

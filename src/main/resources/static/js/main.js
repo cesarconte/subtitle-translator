@@ -7,7 +7,10 @@ import { initLanguageSelectors } from "./modules/languageSelectors.js";
 import { initPreviewer } from "./modules/previewer.js";
 import { initFormSubmission } from "./modules/formSubmission.js";
 import { initProgressTracker } from "./modules/progressTracker.js";
-import { configureTranslationService } from "./api/translationService.js";
+import {
+  configureTranslationService,
+  setFileName,
+} from "./api/translationService.js";
 import { showErrorToast, showSuccessToast } from "./utils/toast.js";
 import navAnimation from "./modules/navAnimation.js";
 
@@ -137,6 +140,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
       fileContent = content;
       fileName = file.name;
+
+      // Actualizar el nombre del archivo en el servicio de traducción
+      setFileName(file.name);
 
       // Update translation button state
       if (formSubmitter) {
