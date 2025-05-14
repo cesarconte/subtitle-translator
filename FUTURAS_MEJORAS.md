@@ -7,9 +7,9 @@ Este documento recopila todas las posibles mejoras y nuevas funcionalidades para
 ### Prioridad Alta
 
 - [ ] **Vista previa en tiempo real**: Visualización dividida que muestre texto original y traducción lado a lado mientras se realiza la traducción
-- [ ] **Mensajes de estado mejorados**: Mostrar progreso detallado durante la traducción (Implementado: 11/05/2025)
-- [ ] **Autodetección de idioma**: Identificar automáticamente el idioma del archivo subido (Implementado: 11/05/2025)
-- [ ] **Mejora de autodetección**: Agregar opción para habilitar/deshabilitar la detección automática (Implementado: 12/05/2025)
+- [ ] **Mensajes de estado mejorados**: Mostrar progreso detallado durante la traducción
+- [x] **Autodetección de idioma**: Identificar automáticamente el idioma del archivo subido (Implementado: 13 de mayo de 2025)
+- [x] **Mejora de autodetección**: Agregar opción para habilitar/deshabilitar la detección automática (Implementado: 13 de mayo de 2025)
 
 ### Prioridad Media
 
@@ -81,7 +81,7 @@ Este documento recopila todas las posibles mejoras y nuevas funcionalidades para
 ### Prioridad Alta
 
 - [ ] **Corrector ortográfico/gramatical**: Verificar errores en el texto traducido
-- [ ] **Detector de sincronización**: Alertar sobre subtítulos potencialmente mal sincronizados
+- [x] **Detector de sincronización**: Alertar sobre subtítulos potencialmente mal sincronizados (Implementado: 12 de mayo de 2025)
 
 ### Prioridad Media
 
@@ -147,4 +147,4 @@ Este documento es un work-in-progress. Al implementar cada característica:
 2. Añadir fecha de implementación
 3. Documentar cualquier decisión importante de diseño o implementación
 
-**Última actualización**: 11 de mayo de 2025
+**Última actualización**: 14 de mayo de 2025
