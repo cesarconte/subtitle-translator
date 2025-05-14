@@ -65,6 +65,29 @@ document.addEventListener("DOMContentLoaded", () => {
     fileInputId: "subtitleFile",
     fileSelectedId: "fileSelected",
     onFileLoaded: (content, file) => {
+      // If content is null, it means the file was removed
+      if (content === null) {
+        fileContent = null;
+        fileName = null;
+
+        // Update translation button state
+        if (formSubmitter) {
+          formSubmitter.updateButtonState();
+        }
+
+        // Hide previous preview if it exists
+        if (previewer) {
+          previewer.hidePreview();
+        }
+
+        // Hide progress tracker if it's visible
+        if (progressTracker) {
+          progressTracker.hide();
+        }
+
+        return;
+      }
+
       fileContent = content;
       fileName = file.name;
 

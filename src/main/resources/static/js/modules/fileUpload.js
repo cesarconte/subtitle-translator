@@ -58,10 +58,45 @@ export function initFileUpload(options) {
 
     selectedFile = file;
 
-    // Show the selected file name in English
+    // Show the selected file name in English with a remove button
     if (fileSelectedElement) {
-      fileSelectedElement.textContent = `Selected file: ${file.name}`;
+      fileSelectedElement.innerHTML = `
+        <div class="file-upload__selected-content">
+          <span class="file-upload__selected-text">Selected file: ${file.name}</span>
+          <button type="button" class="button button--icon button--small file-upload__remove-btn" 
+                  id="removeFileButton" aria-label="Remove selected file" title="Remove file">
+            <span class="button__icon">
+              <svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18">
+                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path>
+              </svg>
+            </span>
+          </button>
+        </div>
+      `;
       fileSelectedElement.setAttribute("aria-hidden", "false");
+
+      // Add click event to the remove button
+      const removeButton = document.getElementById("removeFileButton");
+      if (removeButton) {
+        removeButton.addEventListener("click", (e) => {
+          e.preventDefault();
+          clearFileSelection();
+
+          // Reset language detection info
+          const detectionInfo = document.getElementById(
+            "languageDetectionInfo"
+          );
+          if (detectionInfo) {
+            detectionInfo.textContent = "";
+            detectionInfo.className = "file-upload__detection";
+          }
+
+          // Call the file loaded callback with null to indicate file removal
+          if (typeof options.onFileLoaded === "function") {
+            options.onFileLoaded(null, null);
+          }
+        });
+      }
     }
 
     // Read the file content
@@ -231,13 +266,26 @@ export function initFileUpload(options) {
 
   /**
    * Clears the current file selection
+   * @param {boolean} [showFeedback=true] - Whether to show feedback toast
    */
-  function clearFileSelection() {
+  function clearFileSelection(showFeedback = true) {
     selectedFile = null;
     fileInput.value = "";
     if (fileSelectedElement) {
-      fileSelectedElement.textContent = "";
+      fileSelectedElement.innerHTML = "";
       fileSelectedElement.setAttribute("aria-hidden", "true");
+    }
+
+    // Reset language detection info
+    const detectionInfo = document.getElementById("languageDetectionInfo");
+    if (detectionInfo) {
+      detectionInfo.textContent = "";
+      detectionInfo.className = "file-upload__detection";
+    }
+
+    // Show feedback to the user
+    if (showFeedback) {
+      showErrorToast("File removed");
     }
   }
 
