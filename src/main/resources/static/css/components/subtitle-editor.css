@@ -3,13 +3,6 @@
  * Component for editing subtitle blocks after translation
  */
 
-/* Cuando el editor está activo, esta clase mejora la visualización de la separación entre contenido y editor */
-.editor-active .preview__content {
-  border-bottom: 1px dashed var(--neutral-300);
-  padding-bottom: 1.5rem;
-  margin-bottom: 1rem;
-}
-
 .subtitle-editor {
   width: 100%;
   max-width: 900px;
@@ -66,6 +59,7 @@
   box-shadow: var(--md-shadow-2);
 }
 
+/* Indicadores de confianza para los bloques */
 .subtitle-editor__block.confidence--high {
   border-left-color: var(--md-success);
 }
@@ -100,6 +94,7 @@
   color: var(--md-on-surface-variant);
 }
 
+/* Badge de confianza */
 .subtitle-editor__confidence {
   padding: 0.2rem 0.5rem;
   border-radius: var(--border-radius-pill);
@@ -111,13 +106,7 @@
   border: 1px solid var(--md-success);
 }
 
-.confidence-badge {
-  font-size: var(--text-xs);
-  padding: 0.2rem 0.5rem;
-  border-radius: var(--radius-pill);
-  font-weight: 600;
-}
-
+/* Variantes de badges de confianza por nivel */
 .confidence-badge--high {
   background-color: var(--success-100);
   color: var(--success-900);
@@ -152,7 +141,7 @@
   background: var(--md-primary-container);
 }
 
-/* Placeholder y controles */
+/* Placeholder para cuando no hay contenido */
 .subtitle-editor__placeholder {
   font-style: italic;
   opacity: 0.7;
@@ -164,17 +153,10 @@
   color: var(--md-on-surface-variant);
 }
 
-.editor-controls {
-  display: flex;
-  justify-content: flex-end;
-  gap: var(--spacing-md);
-  margin-top: var(--spacing-lg);
-}
-
-/* Clase para cuando el editor está activo para mostrar una mejor disposición */
+/* Cuando el editor está activo - ajustes visuales para el contenido */
 .editor-active .preview__content {
   margin-bottom: 2rem;
-  padding-bottom: 1rem;
+  padding-bottom: 1.5rem;
   border-bottom: 1px dashed var(--neutral-300);
 }
 
@@ -210,10 +192,5 @@
 
   .subtitle-editor__text {
     font-size: var(--text-sm);
-  }
-
-  .editor-controls {
-    flex-direction: column;
-    gap: var(--spacing-sm);
   }
 }

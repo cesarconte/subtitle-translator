@@ -172,7 +172,7 @@ export function initSubtitleEditor(options) {
           // Add confidence indicator if available
           if (confidenceData && confidenceData[index]) {
             const confidenceBadge = document.createElement("div");
-            confidenceBadge.className = `subtitle-editor__confidence confidence-badge confidence-badge--${confidenceLevel}`;
+            confidenceBadge.className = `subtitle-editor__confidence confidence-badge--${confidenceLevel}`;
             confidenceBadge.textContent =
               confidenceLevel.charAt(0).toUpperCase() +
               confidenceLevel.slice(1);
