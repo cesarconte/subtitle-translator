@@ -124,8 +124,10 @@ export function initSubtitleEditor(options) {
 
       // Set up and show editor
       if (editorContainer) {
-        // Clear any existing content
+        // Clear any existing content, but preserve the static title if present
+        const title = editorContainer.querySelector(".subtitle-editor__title");
         editorContainer.innerHTML = "";
+        if (title) editorContainer.appendChild(title);
 
         // Make editor visible through CSS classes
         editorContainer.classList.add("subtitle-editor--visible");

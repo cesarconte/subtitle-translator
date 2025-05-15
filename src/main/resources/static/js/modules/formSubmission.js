@@ -177,15 +177,20 @@ export function initFormSubmission(options) {
   const updateButtonState = () => {
     let isValid = false;
 
-    // Check that a file is present
-    if (
-      typeof options.getFileContent === "function" &&
-      options.getFileContent()
-    ) {
-      // Check that languages are selected
-      if (typeof options.getLanguages === "function") {
-        const languages = options.getLanguages();
+    // Debug: log current file and language state
+    let fileContent =
+      typeof options.getFileContent === "function"
+        ? options.getFileContent()
+        : null;
+    let languages =
+      typeof options.getLanguages === "function" ? options.getLanguages() : {};
+    console.log("[updateButtonState] fileContent exists:", !!fileContent);
+    console.log("[updateButtonState] languages:", languages);
 
+    // Check that a file is present
+    if (fileContent) {
+      // Check that languages are selected
+      if (languages) {
         if (
           languages.targetLanguage &&
           (languages.sourceLanguage === "auto" ||
@@ -196,6 +201,7 @@ export function initFormSubmission(options) {
       }
     }
 
+    console.log("[updateButtonState] isValid:", isValid);
     submitButton.disabled = !isValid;
   };
 

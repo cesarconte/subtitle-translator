@@ -259,60 +259,46 @@
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: calc(100% - 50px);
-  cursor: help; /* Indicador de que hay más información disponible */
   position: relative;
   padding: 2px 4px;
   border-radius: 2px;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
 }
 
-/* Mejorar accesibilidad para indicar que hay más información */
-.file-upload__tooltip:hover,
-.file-upload__tooltip:focus {
-  background-color: rgba(var(--md-primary), 0.08);
-  box-shadow: 0 0 0 1px rgba(var(--md-primary), 0.2);
+/* Estilos para el icono de información */
+.file-upload__info-icon {
+  color: var(--md-primary);
+  opacity: 0.8;
+  flex-shrink: 0;
+  transition: transform var(--transition-fast), opacity var(--transition-fast);
+}
+
+.file-upload__selected-text:hover .file-upload__info-icon {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+/* Estilos para truncar correctamente el texto del nombre del archivo */
+.file-upload__selected-text > span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Estilizado del texto seleccionado al hacer hover o focus */
+.file-upload__selected-text:hover,
+.file-upload__selected-text:focus {
+  background-color: rgba(var(--md-primary-rgb), 0.08);
   outline: none;
 }
+/* Estilos de modal eliminados: esta funcionalidad ha sido reemplazada por el tooltip nativo del navegador */
 
-/* Modal para mostrar nombre completo del archivo en dispositivos táctiles */
-.file-name-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  animation: fadeIn 0.2s ease-out;
-}
-
-.file-name-modal__content {
-  background-color: var(--md-surface);
-  padding: var(--spacing-lg);
-  border-radius: var(--border-radius-medium);
-  box-shadow: var(--md-shadow-3);
-  max-width: 90%;
-  width: 400px;
-  text-align: center;
-}
-
-.file-name-modal__filename {
-  font-family: var(--font-mono);
-  background-color: var(--md-surface-variant);
-  padding: var(--spacing-md);
-  margin: var(--spacing-md) 0;
-  border-radius: var(--border-radius-small);
-  word-break: break-all;
-  max-height: 150px;
-  overflow-y: auto;
-}
-
-.file-name-modal h4 {
-  margin-top: 0;
-  color: var(--md-on-surface);
-}
+/* 
+ * Estilos del modal eliminados.
+ * Las animaciones fadeIn se mantienen porque pueden estar siendo usadas en otro lado.
+ */
 
 @keyframes fadeIn {
   from {
@@ -527,6 +513,24 @@
 
   .file-upload__text {
     font-size: var(--font-size-sm);
+  }
+
+  /* Configuración para mostrar el nombre del archivo en móviles */
+  .file-upload__selected-text {
+    font-size: 0.9rem;
+    max-width: calc(100% - 40px);
+    line-height: 1.3;
+  }
+
+  .file-upload__selected-text > span {
+    max-width: calc(100% - 24px); /* Espacio para el icono */
+    white-space: nowrap; /* Mantener comportamiento de truncamiento */
+    text-overflow: ellipsis;
+  }
+
+  /* Reducir tamaño del texto para pantallas muy pequeñas */
+  .file-upload__selected-content {
+    padding: var(--spacing-xs) var(--spacing-sm);
   }
 }
 

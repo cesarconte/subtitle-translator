@@ -63,82 +63,48 @@ export function initFileUpload(options) {
 
     selectedFile = file;
 
-    // Show the selected file name in English with a remove button
+    // Show the selected file name with a remove button
     if (fileSelectedElement) {
       fileSelectedElement.innerHTML = `
-        <div class="file-upload__selected-content">
-          <span class="file-upload__selected-text file-upload__tooltip" title="${file.name}" tabindex="0" role="button" aria-label="Selected file: ${file.name}. Click to show full filename.">Selected file: ${file.name}</span>
-          <button type="button" class="button button--icon button--small file-upload__remove-btn" 
-                  id="removeFileButton" aria-label="Remove selected file" title="Remove file">
-            <span class="button__icon">
-              <svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18">
-                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path>
-              </svg>
-            </span>
-          </button>
-        </div>
+      <div class="file-upload__selected-content">
+        <span class="file-upload__selected-text" title="${file.name}" aria-label="Selected file: ${file.name}">
+          <span>Selected file: ${file.name}</span>
+          <svg class="file-upload__info-icon" aria-hidden="true" viewBox="0 0 24 24" width="16" height="16">
+            <path d="M11 7h2v2h-2zm0 4h2v6h-2zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" fill="currentColor"></path>
+          </svg>
+        </span>
+        <button type="button" class="button button--icon button--small file-upload__remove-btn" 
+                id="removeFileButton" aria-label="Remove selected file" title="Remove file">
+          <span class="button__icon">
+            <svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18">
+              <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path>
+            </svg>
+          </span>
+        </button>
+      </div>
       `;
       fileSelectedElement.setAttribute("aria-hidden", "false");
+    }
 
-      // Add tooltip click functionality for mobile devices
-      const tooltipElement = fileSelectedElement.querySelector(
-        ".file-upload__tooltip"
-      );
-      if (tooltipElement) {
-        tooltipElement.addEventListener("click", function () {
-          // Show a temporary dialog/modal with the full filename
-          const tempModal = document.createElement("div");
-          tempModal.className = "file-name-modal";
-          tempModal.innerHTML = `
-            <div class="file-name-modal__content">
-              <h4>Selected File</h4>
-              <p class="file-name-modal__filename">${file.name}</p>
-              <button class="button button--primary file-name-modal__close">OK</button>
-            </div>
-          `;
-          document.body.appendChild(tempModal);
+    // Add click event to the remove button
+    const removeButton = document.getElementById("removeFileButton");
+    if (removeButton) {
+      removeButton.addEventListener("click", (e) => {
+        e.preventDefault();
+        clearFileSelection();
 
-          // Add close event
-          const closeButton = tempModal.querySelector(
-            ".file-name-modal__close"
-          );
-          if (closeButton) {
-            closeButton.addEventListener("click", function () {
-              document.body.removeChild(tempModal);
-            });
-          }
+        // Reset language detection info
+        const detectionInfo = document.getElementById("languageDetectionInfo");
+        if (detectionInfo) {
+          detectionInfo.textContent = "";
+          detectionInfo.className = "file-upload__detection";
+        }
 
-          // Auto close after 3 seconds
-          setTimeout(() => {
-            if (document.body.contains(tempModal)) {
-              document.body.removeChild(tempModal);
-            }
-          }, 3000);
-        });
-      }
-
-      // Add click event to the remove button
-      const removeButton = document.getElementById("removeFileButton");
-      if (removeButton) {
-        removeButton.addEventListener("click", (e) => {
-          e.preventDefault();
-          clearFileSelection();
-
-          // Reset language detection info
-          const detectionInfo = document.getElementById(
-            "languageDetectionInfo"
-          );
-          if (detectionInfo) {
-            detectionInfo.textContent = "";
-            detectionInfo.className = "file-upload__detection";
-          }
-
-          // Call the file loaded callback with null to indicate file removal
-          if (typeof options.onFileLoaded === "function") {
-            options.onFileLoaded(null, null);
-          }
-        });
-      }
+        // Call the file loaded callback with null to indicate file removal
+        if (typeof options.onFileLoaded === "function") {
+          options.onFileLoaded(null, null);
+        }
+      });
     }
 
     // Read the file content
@@ -289,22 +255,12 @@ export function initFileUpload(options) {
   dropZone.addEventListener("drop", (e) => {
     e.preventDefault();
     e.stopPropagation();
-
     dropZone.classList.remove("file-upload__dropzone--hover");
-
     const file = e.dataTransfer.files[0];
     if (file) {
       handleFileSelection(file);
     }
   });
-
-  /**
-   * Returns the currently selected file
-   * @returns {File|null} Selected file or null if none
-   */
-  function getSelectedFile() {
-    return selectedFile;
-  }
 
   /**
    * Clears the current file selection
@@ -334,6 +290,14 @@ export function initFileUpload(options) {
     if (typeof options.onClearSelection === "function") {
       options.onClearSelection();
     }
+  }
+
+  /**
+   * Returns the currently selected file
+   * @returns {File|null} Selected file or null if none
+   */
+  function getSelectedFile() {
+    return selectedFile;
   }
 
   // Return public API

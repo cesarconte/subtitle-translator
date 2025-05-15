@@ -176,7 +176,6 @@
           type="submit"
           class="button button--primary ripple"
           id="translateButton"
-          disabled
         >
           <span class="button__text">Translate subtitle</span>
           <span class="button__icon">
@@ -195,9 +194,14 @@
   <section id="preview" class="preview" aria-live="polite" hidden>
     <h2 class="preview__title">File preview</h2>
     <!-- Estadísticas de confianza -->
-    <div id="confidenceStats" class="confidence-stats"></div>
+    <div
+      id="confidenceStats"
+      class="confidence-stats"
+      aria-label="Confidence statistics"
+    ></div>
     <div
       class="preview__content flex flex-row flex-md-row flex-sm-row flex-xs-col gap-lg"
+      aria-label="File preview content"
     >
       <div class="preview__original flex flex-col flex-1">
         <h3 class="preview__subtitle">Original content</h3>
@@ -210,7 +214,13 @@
     </div>
     <!-- Editor container -->
     <div class="flex flex-col items-center w-100">
-      <div id="subtitleEditor" class="subtitle-editor">
+      <div
+        id="subtitleEditor"
+        class="subtitle-editor"
+        role="region"
+        aria-label="Subtitle editor"
+      >
+        <h3 class="subtitle-editor__title">Edit subtitle</h3>
         <!-- Editor de subtítulos - Este div debe mostrarse al hacer clic en editar -->
         <div class="subtitle-editor__placeholder">
           El editor de subtítulos se cargará aquí...
