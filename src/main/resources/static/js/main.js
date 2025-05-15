@@ -17,6 +17,27 @@ import navAnimation from "./modules/navAnimation.js";
 
 // Esperar a que el DOM esté completamente cargado
 document.addEventListener("DOMContentLoaded", () => {
+  console.log("DOM fully loaded");
+
+  // Verificar elementos críticos
+  console.group("Critical Elements Check");
+  console.log("subtitleEditor:", !!document.getElementById("subtitleEditor"));
+  console.log("editButton:", !!document.getElementById("editButton"));
+  console.log(
+    "saveChangesButton:",
+    !!document.getElementById("saveChangesButton")
+  );
+  console.log(
+    "cancelEditsButton:",
+    !!document.getElementById("cancelEditsButton")
+  );
+  console.log(
+    "translatedPreview:",
+    !!document.getElementById("translatedPreview")
+  );
+  console.log("originalPreview:", !!document.getElementById("originalPreview"));
+  console.groupEnd();
+
   // Función para resetear todos los formularios y valores cuando se carga la página
   function resetAllForms() {
     // Resetear todos los formularios
@@ -182,17 +203,26 @@ document.addEventListener("DOMContentLoaded", () => {
     cancelButtonId: "cancelEditsButton",
     translatedPreviewId: "translatedPreview",
     onSave: (updatedContent) => {
+      console.log("main.js: onSave callback executed with updated content");
       // Update the translated content with the edited content
       if (previewer) {
         // Update the preview with the edited content
         const currentPreviewData = previewer.getCurrentPreviewData();
+        console.log(
+          "main.js: Got current preview data",
+          currentPreviewData ? "successfully" : "failed"
+        );
+
         if (currentPreviewData) {
           currentPreviewData.translated = updatedContent;
+          console.log("main.js: Updating preview with edited content");
           previewer.showPreview(currentPreviewData);
         }
       }
     },
   });
+
+  console.log("main.js: Subtitle editor initialized:", !!subtitleEditor);
 
   // Initialize previewer
   previewer = initPreviewer({

@@ -321,6 +321,12 @@
     align-items: stretch;
   }
 
+  /* Ajuste para flex-1 en modo columna */
+  .flex-xs-col > .flex-1 {
+    flex: 1 1 auto;
+    width: 100%;
+  }
+
   .items-xs-center {
     align-items: center;
   }

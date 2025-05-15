@@ -3,6 +3,13 @@
  * Component for editing subtitle blocks after translation
  */
 
+/* Cuando el editor está activo, esta clase mejora la visualización de la separación entre contenido y editor */
+.editor-active .preview__content {
+  border-bottom: 1px dashed var(--neutral-300);
+  padding-bottom: 1.5rem;
+  margin-bottom: 1rem;
+}
+
 .subtitle-editor {
   width: 100%;
   max-width: 1200px;
@@ -13,6 +20,21 @@
   border-radius: var(--radius-md);
   background-color: var(--surface-1);
   box-shadow: var(--shadow-sm);
+  z-index: 10; /* Asegurar que esté sobre otros elementos */
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+
+  /* Estado por defecto: oculto */
+  display: none;
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* Estado visible del editor */
+.subtitle-editor--visible {
+  display: block;
+  visibility: visible;
+  opacity: 1;
+  position: relative;
 }
 
 .subtitle-editor__block {
@@ -86,6 +108,16 @@
   box-shadow: 0 0 0 2px var(--primary-100);
 }
 
+/* Placeholder text for debugging */
+.subtitle-editor__placeholder {
+  font-style: italic;
+  opacity: 0.7;
+  padding: 2rem;
+  text-align: center;
+  border: 1px dashed var(--neutral-400);
+  border-radius: var(--radius-md);
+}
+
 /* Editor controls */
 .editor-controls {
   display: flex;
@@ -132,4 +164,18 @@
 .confidence-badge--low {
   background-color: var(--error-100);
   color: var(--error-900);
+}
+
+/* Clase para cuando el editor está activo para mostrar una mejor disposición */
+.editor-active .preview__content {
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px dashed var(--neutral-300);
+}
+
+/* Garantizar que el contenido traducido siempre sea visible */
+.preview__translated .preview__text,
+#translatedPreview {
+  display: block !important;
+  visibility: visible !important;
 }

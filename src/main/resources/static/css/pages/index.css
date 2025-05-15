@@ -70,11 +70,7 @@
 /* Responsividad en las media queries consolidadas */
 
 /* La estructura de preview__content ahora se maneja con clases de flexbox en el HTML */
-.preview-content-responsive {
-  display: flex;
-  flex-direction: row;
-  gap: var(--spacing-lg);
-}
+/* Se ha eliminado la clase .preview-content-responsive para usar clases utilitarias directamente en el HTML */
 
 /* Responsividad en las media queries consolidadas */
 
@@ -164,9 +160,66 @@
 
 /* Media Queries para pantallas extra pequeñas (max-width: 480px) */
 @media (max-width: 480px) {
-  /* Uploader */
-  .uploader {
+  /* Uploader y Preview */
+  .uploader,
+  .preview {
     padding: 16px; /* var(--spacing-md) */
+  }
+
+  /* Estadísticas de confianza */
+  .confidence-stats {
+    padding: 12px;
+    margin-top: 8px;
+    margin-bottom: 16px;
+    border-radius: 4px;
+  }
+
+  /* Indicadores de confianza inline */
+  .confidence-indicator {
+    font-size: 10px; /* Reducir tamaño para móviles */
+    height: 1.2rem;
+    padding: 0 4px;
+    margin-left: 2px;
+  }
+
+  .confidence-indicator__icon {
+    width: 0.8rem;
+    height: 0.8rem;
+    margin-right: 2px;
+  }
+
+  /* Preview contenido */
+  .preview__content {
+    gap: 24px; /* var(--spacing-lg) */
+  }
+
+  .preview__original,
+  .preview__translated {
+    width: 100%;
+    margin-bottom: 16px; /* var(--spacing-md) */
+  }
+
+  /* Reducir el encabezado en móviles para ahorrar espacio */
+  .preview__title {
+    font-size: 18px;
+    margin-bottom: 12px;
+  }
+
+  .preview__text {
+    max-height: 250px; /* Reducir altura en móviles */
+    font-size: 13px; /* Tamaño de fuente ligeramente menor para móviles */
+    padding: 12px; /* Reducir padding */
+    margin-bottom: 0; /* Eliminar margen inferior */
+  }
+
+  /* Mejorar visibilidad de los títulos de sección */
+  .preview__subtitle {
+    font-size: 16px;
+    margin-bottom: 8px;
+    background-color: var(--md-surface-variant);
+    padding: 8px;
+    border-radius: 4px 4px 0 0;
+    margin-bottom: 0;
   }
 
   /* Preview actions */
@@ -210,14 +263,5 @@
 
   .toast--warning {
     border-color: var(--md-warning);
-  }
-}
-
-/* Media Queries para pantallas medianas */
-@media (max-width: var(--breakpoint-md)) {
-  /* Preview content */
-  .preview-content-responsive {
-    flex-direction: column;
-    gap: var(--spacing-md);
   }
 }
