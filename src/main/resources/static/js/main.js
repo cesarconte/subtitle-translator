@@ -7,6 +7,7 @@ import { initLanguageSelectors } from "./modules/languageSelectors.js";
 import { initPreviewer } from "./modules/previewer.js";
 import { initFormSubmission } from "./modules/formSubmission.js";
 import { initProgressTracker } from "./modules/progressTracker.js";
+import { initSubtitleEditor } from "./modules/subtitleEditor.js";
 import {
   configureTranslationService,
   setFileName,
@@ -58,6 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let previewer;
   let formSubmitter;
   let progressTracker;
+  let subtitleEditor;
 
   // Loaded file content
   let fileContent = null;
@@ -172,6 +174,26 @@ document.addEventListener("DOMContentLoaded", () => {
     },
   });
 
+  // Initialize subtitle editor
+  subtitleEditor = initSubtitleEditor({
+    editorContainerId: "subtitleEditor",
+    editButtonId: "editButton",
+    saveButtonId: "saveChangesButton",
+    cancelButtonId: "cancelEditsButton",
+    translatedPreviewId: "translatedPreview",
+    onSave: (updatedContent) => {
+      // Update the translated content with the edited content
+      if (previewer) {
+        // Update the preview with the edited content
+        const currentPreviewData = previewer.getCurrentPreviewData();
+        if (currentPreviewData) {
+          currentPreviewData.translated = updatedContent;
+          previewer.showPreview(currentPreviewData);
+        }
+      }
+    },
+  });
+
   // Initialize previewer
   previewer = initPreviewer({
     originalPreviewId: "originalPreview",
@@ -180,6 +202,7 @@ document.addEventListener("DOMContentLoaded", () => {
     downloadButtonId: "downloadButton",
     copyButtonId: "copyButton",
     confidenceStatsId: "confidenceStats",
+    subtitleEditor: subtitleEditor, // Pass the subtitle editor instance
     onDownload: () => {
       // Reset language selectors after download completes
       if (languageSelector) {
@@ -241,6 +264,11 @@ document.addEventListener("DOMContentLoaded", () => {
           averageConfidence: result.averageConfidence,
           confidenceLevel: result.confidenceLevel,
         });
+      }
+
+      // Update subtitle editor with translated content
+      if (subtitleEditor) {
+        subtitleEditor.setContent(result.translated, result.confidenceData);
       }
 
       const confidenceMessage =

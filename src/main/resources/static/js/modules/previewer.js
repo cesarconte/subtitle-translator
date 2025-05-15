@@ -13,6 +13,7 @@
  * @property {string} copyButtonId - ID of the copy to clipboard button
  * @property {string} confidenceStatsId - ID of the element for confidence statistics
  * @property {Function} [onDownload] - Callback function to execute when the user downloads the translated file
+ * @property {Object} [subtitleEditor] - Reference to the subtitle editor instance
  */
 
 import { copyToClipboard } from "../utils/clipboard.js";
@@ -101,6 +102,11 @@ export function initPreviewer(options) {
       );
     }
 
+    // Update subtitle editor content if available
+    if (options.subtitleEditor) {
+      options.subtitleEditor.setContent(translated, confidenceData);
+    }
+
     if (previewContainer) {
       previewContainer.hidden = false;
     }
@@ -119,6 +125,17 @@ export function initPreviewer(options) {
 
     if (translatedPreview) {
       translatedPreview.textContent = "";
+    }
+
+    // Reset subtitle editor if available
+    if (options.subtitleEditor) {
+      // If in edit mode, cancel editing
+      if (
+        document.getElementById("editButton").getAttribute("aria-pressed") ===
+        "true"
+      ) {
+        options.subtitleEditor.cancelEditing();
+      }
     }
 
     if (previewContainer) {
@@ -186,9 +203,44 @@ export function initPreviewer(options) {
   // Initially hide the preview
   hidePreview();
 
+  /**
+   * Gets the current preview data
+   * @returns {Object|null} Current preview data or null if no preview is visible
+   */
+  const getCurrentPreviewData = () => {
+    if (!originalContent || !translatedContent) {
+      return null;
+    }
+
+    // Return the current preview data
+    return {
+      original: originalContent,
+      translated: translatedContent,
+      fileName: fileName,
+      // Include other data if available through a closure variable
+    };
+  };
+
+  /**
+   * Updates the translated content (used when edited)
+   * @param {string} newContent - The new translated content
+   */
+  const updateTranslatedContent = (newContent) => {
+    if (!newContent) return;
+
+    translatedContent = newContent;
+
+    // Update the display
+    if (translatedPreview) {
+      translatedPreview.textContent = newContent;
+    }
+  };
+
   // Return public API
   return {
     showPreview,
     hidePreview,
+    getCurrentPreviewData,
+    updateTranslatedContent,
   };
 }

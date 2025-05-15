@@ -5,6 +5,9 @@
   width: 100%;
   max-width: 100%;
   margin-bottom: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .form__group {
@@ -130,6 +133,7 @@
 
 /* Acciones del formulario */
 .form__actions {
+  width: 100%;
   margin-top: var(--spacing-lg);
 }
 
@@ -145,11 +149,17 @@
 
 /* Carga de archivos */
 .file-upload {
+  width: 100%;
   margin-bottom: var(--spacing-lg);
+  display: flex;
+  flex-direction: column; /* Ensure child elements stack vertically */
+  align-items: center; /* Center children horizontally */
+  justify-content: center;
 }
 
 .file-upload__dropzone {
   position: relative;
+  width: 100%;
   border: 2px dashed var(--md-outline);
   border-radius: var(--border-radius-medium);
   padding: var(--spacing-xl);
@@ -157,6 +167,7 @@
   cursor: pointer;
   transition: border-color var(--transition-fast),
     background-color var(--transition-fast);
+  margin: 0 auto; /* Center the dropzone within its parent */
 }
 
 .file-upload__dropzone:hover,
@@ -280,6 +291,7 @@
 /* Selección de idioma */
 .language-selection {
   margin-top: var(--spacing-lg);
+  width: 100%;
 }
 
 .language-selection__row--switch {

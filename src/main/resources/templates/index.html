@@ -3,11 +3,11 @@
     <h2 class="uploader__title">Upload your subtitle file</h2>
 
     <!-- Upload and translation form -->
-    <form id="translationForm" class="form">
+    <form id="translationForm" class="form flex flex-col items-center w-100">
       <!-- Área de carga de archivo -->
       <div class="file-upload">
         <div
-          class="file-upload__dropzone flex flex-col items-center animate-fadeIn"
+          class="file-upload__dropzone flex flex-col items-center animate-fadeIn w-100"
           id="dropZone"
         >
           <input
@@ -56,7 +56,7 @@
 
       <!-- Selección de idiomas -->
       <div
-        class="language-selection flex flex-col gap-md animate-fadeInUp animate-delay-sm"
+        class="language-selection flex flex-col gap-md w-100 animate-fadeInUp animate-delay-sm"
       >
         <div
           class="language-selection__row flex flex-row gap-xl language-selector-responsive w-xs-100"
@@ -149,9 +149,7 @@
         <div
           class="language-selection__row language-selection__row--switch flex flex-row flex-xs-row justify-end justify-xs-start animate-fadeInUp animate-delay-md"
         >
-          <div
-            class="language-selection__switch-group flex flex-row items-center gap-sm w-xs-100"
-          >
+          <div class="language-selection__switch-group flex flex-row gap-sm">
             <label
               for="autoDetectSwitch"
               class="language-selection__switch-label"
@@ -210,9 +208,60 @@
         <pre class="preview__text" id="translatedPreview"></pre>
       </div>
     </div>
+    <!-- Editor container -->
+    <div class="flex flex-col items-center w-100">
+      <div id="subtitleEditor" class="subtitle-editor" hidden></div>
+    </div>
+
     <div
       class="preview__actions flex justify-end gap-md preview-actions-responsive"
     >
+      <button
+        type="button"
+        class="button button--secondary"
+        id="editButton"
+        aria-pressed="false"
+      >
+        <span class="button__icon">
+          <svg aria-hidden="true" viewBox="0 0 24 24" width="24" height="24">
+            <path
+              d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a.9959.9959 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
+            ></path>
+          </svg>
+        </span>
+        <span class="button__text">Edit subtitles</span>
+      </button>
+
+      <button
+        type="button"
+        class="button button--primary"
+        id="saveChangesButton"
+        hidden
+      >
+        <span class="button__icon">
+          <svg aria-hidden="true" viewBox="0 0 24 24" width="24" height="24">
+            <path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"></path>
+          </svg>
+        </span>
+        <span class="button__text">Save changes</span>
+      </button>
+
+      <button
+        type="button"
+        class="button button--text"
+        id="cancelEditsButton"
+        hidden
+      >
+        <span class="button__icon">
+          <svg aria-hidden="true" viewBox="0 0 24 24" width="24" height="24">
+            <path
+              d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+            ></path>
+          </svg>
+        </span>
+        <span class="button__text">Cancel</span>
+      </button>
+
       <button
         type="button"
         class="button button--secondary"

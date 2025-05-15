@@ -39,7 +39,7 @@ Este documento recopila todas las posibles mejoras y nuevas funcionalidades para
   - [ ] .vtt
   - [ ] .sub
   - [ ] .sbv
-- [ ] **Edición post-traducción**: Permitir ajustar manualmente el texto traducido
+- [x] **Edición post-traducción**: Permitir ajustar manualmente el texto traducido con tutorial interactivo (Implementado: 14 de mayo de 2025)
 
 ### Prioridad Media
 
@@ -56,7 +56,7 @@ Este documento recopila todas las posibles mejoras y nuevas funcionalidades para
 
 - [ ] **Almacenamiento en la nube**: Sincronizar traducciones entre dispositivos
 - [ ] **Traducción offline**: Para archivos pequeños sin necesidad de conexión
-- [ ] **Estimación de tiempo**: Calcular tiempo aproximado para completar traducción
+- [x] **Estimación de tiempo**: Calcular tiempo aproximado para completar traducción
 - [ ] **Opciones de estilo**: Personalizar la apariencia de los subtítulos exportados
 
 ## Integraciones y Exportación
