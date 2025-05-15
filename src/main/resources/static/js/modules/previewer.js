@@ -10,13 +10,11 @@
  * @property {string} translatedPreviewId - ID of the element to display translated content
  * @property {string} previewContainerId - ID of the main preview container
  * @property {string} downloadButtonId - ID of the download button
- * @property {string} copyButtonId - ID of the copy to clipboard button
  * @property {string} confidenceStatsId - ID of the element for confidence statistics
  * @property {Function} [onDownload] - Callback function to execute when the user downloads the translated file
  * @property {Object} [subtitleEditor] - Reference to the subtitle editor instance
  */
 
-import { copyToClipboard } from "../utils/clipboard.js";
 import { showSuccessToast, showErrorToast } from "../utils/toast.js";
 import {
   renderTranslatedTextWithConfidenceIndicators,
@@ -35,7 +33,6 @@ export function initPreviewer(options) {
   );
   const previewContainer = document.getElementById(options.previewContainerId);
   const downloadButton = document.getElementById(options.downloadButtonId);
-  const copyButton = document.getElementById(options.copyButtonId);
 
   let originalContent = null;
   let translatedContent = null;
@@ -178,27 +175,7 @@ export function initPreviewer(options) {
     });
   }
 
-  // Event listener for copy button
-  if (copyButton) {
-    copyButton.addEventListener("click", async () => {
-      if (!translatedContent) {
-        showErrorToast("No content to copy");
-        return;
-      }
-
-      try {
-        const copied = await copyToClipboard(translatedContent);
-        if (copied) {
-          showSuccessToast("Content copied to clipboard");
-        } else {
-          showErrorToast("Could not copy to clipboard");
-        }
-      } catch (error) {
-        console.error("Error copying:", error);
-        showErrorToast("Error copying to clipboard");
-      }
-    });
-  }
+  // Event listener for copy button - Removed
 
   // Initially hide the preview
   hidePreview();

@@ -200,7 +200,6 @@ document.addEventListener("DOMContentLoaded", () => {
     translatedPreviewId: "translatedPreview",
     previewContainerId: "preview",
     downloadButtonId: "downloadButton",
-    copyButtonId: "copyButton",
     confidenceStatsId: "confidenceStats",
     subtitleEditor: subtitleEditor, // Pass the subtitle editor instance
     onDownload: () => {
