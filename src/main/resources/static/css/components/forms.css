@@ -259,6 +259,68 @@
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: calc(100% - 50px);
+  cursor: help; /* Indicador de que hay más información disponible */
+  position: relative;
+  padding: 2px 4px;
+  border-radius: 2px;
+}
+
+/* Mejorar accesibilidad para indicar que hay más información */
+.file-upload__tooltip:hover,
+.file-upload__tooltip:focus {
+  background-color: rgba(var(--md-primary), 0.08);
+  box-shadow: 0 0 0 1px rgba(var(--md-primary), 0.2);
+  outline: none;
+}
+
+/* Modal para mostrar nombre completo del archivo en dispositivos táctiles */
+.file-name-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.file-name-modal__content {
+  background-color: var(--md-surface);
+  padding: var(--spacing-lg);
+  border-radius: var(--border-radius-medium);
+  box-shadow: var(--md-shadow-3);
+  max-width: 90%;
+  width: 400px;
+  text-align: center;
+}
+
+.file-name-modal__filename {
+  font-family: var(--font-mono);
+  background-color: var(--md-surface-variant);
+  padding: var(--spacing-md);
+  margin: var(--spacing-md) 0;
+  border-radius: var(--border-radius-small);
+  word-break: break-all;
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+.file-name-modal h4 {
+  margin-top: 0;
+  color: var(--md-on-surface);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .file-upload__remove-btn {

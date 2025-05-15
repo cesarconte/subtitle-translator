@@ -1,6 +1,10 @@
 /**
  * Module for managing file uploads
- * @module modules/fileUpload
+ * @module modules/file      fileSelectedElement.innerHTML = `
+        <div class="file-upload__selected-content">
+          <span class="file-upload__selected-text file-upload__tooltip" title="${file.name}">Selected file: ${file.name}</span>
+          <button type="button" class="button button--icon button--small file-upload__remove-btn" 
+                  id="removeFileButton" aria-label="Remove selected file" title="Remove file">`d
  */
 
 import { isValidSRT } from "../utils/srtParser.js";
@@ -63,7 +67,7 @@ export function initFileUpload(options) {
     if (fileSelectedElement) {
       fileSelectedElement.innerHTML = `
         <div class="file-upload__selected-content">
-          <span class="file-upload__selected-text">Selected file: ${file.name}</span>
+          <span class="file-upload__selected-text file-upload__tooltip" title="${file.name}" tabindex="0" role="button" aria-label="Selected file: ${file.name}. Click to show full filename.">Selected file: ${file.name}</span>
           <button type="button" class="button button--icon button--small file-upload__remove-btn" 
                   id="removeFileButton" aria-label="Remove selected file" title="Remove file">
             <span class="button__icon">
@@ -75,6 +79,43 @@ export function initFileUpload(options) {
         </div>
       `;
       fileSelectedElement.setAttribute("aria-hidden", "false");
+
+      // Add tooltip click functionality for mobile devices
+      const tooltipElement = fileSelectedElement.querySelector(
+        ".file-upload__tooltip"
+      );
+      if (tooltipElement) {
+        tooltipElement.addEventListener("click", function () {
+          // Show a temporary dialog/modal with the full filename
+          const tempModal = document.createElement("div");
+          tempModal.className = "file-name-modal";
+          tempModal.innerHTML = `
+            <div class="file-name-modal__content">
+              <h4>Selected File</h4>
+              <p class="file-name-modal__filename">${file.name}</p>
+              <button class="button button--primary file-name-modal__close">OK</button>
+            </div>
+          `;
+          document.body.appendChild(tempModal);
+
+          // Add close event
+          const closeButton = tempModal.querySelector(
+            ".file-name-modal__close"
+          );
+          if (closeButton) {
+            closeButton.addEventListener("click", function () {
+              document.body.removeChild(tempModal);
+            });
+          }
+
+          // Auto close after 3 seconds
+          setTimeout(() => {
+            if (document.body.contains(tempModal)) {
+              document.body.removeChild(tempModal);
+            }
+          }, 3000);
+        });
+      }
 
       // Add click event to the remove button
       const removeButton = document.getElementById("removeFileButton");
