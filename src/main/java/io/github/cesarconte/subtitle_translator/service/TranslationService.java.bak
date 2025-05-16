@@ -2,7 +2,6 @@ package io.github.cesarconte.subtitle_translator.service;
 
 import io.github.cesarconte.subtitle_translator.model.SubtitleBlock;
 import io.github.cesarconte.subtitle_translator.model.LanguageDetectionResponse;
-// import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -56,13 +55,11 @@ public class TranslationService {
         this.restTemplate = new RestTemplate();
     }
     
-
+    // Log API key when Spring initializes this bean (called after properties are set)
     @jakarta.annotation.PostConstruct
-    // 
     private void init() {
         // Log para mostrar qué API key se está usando (parcialmente oculta por seguridad)
         if (apiKey != null && apiKey.length() > 8) {
-        // 
             String firstFour = apiKey.substring(0, 4);
             String lastFour = apiKey.substring(apiKey.length() - 4);
             System.out.println("Usando DeepL API key: " + firstFour + "..." + lastFour);
@@ -215,7 +212,7 @@ public class TranslationService {
                 Thread.currentThread().interrupt();
             }
             
-
+            // Process the translated text and extract subtitles while preserving structure
             processTranslatedMarkedText(translatedMarkedText, group, translatedSubtitles, originalTexts);
 
             // Update translated character count for progress
@@ -297,7 +294,7 @@ public class TranslationService {
                 Thread.currentThread().interrupt();
             }
             
-
+            // Process the translated text and extract subtitles while preserving structure
             processTranslatedMarkedText(translatedMarkedText, group, translatedSubtitles, originalTexts);
         }
 
