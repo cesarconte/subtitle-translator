@@ -66,25 +66,155 @@ export function initPreviewer(options) {
       fileName = displayFileName.replace(".srt", "_translated.srt");
     }
 
-    if (originalPreview) {
-      originalPreview.textContent = original;
-    }
+    // Mostrar el contenido original formateado
+    if (originalPreview && translatedPreview) {
+      // Parsear los subtítulos para mejor visualización
+      const parsedOriginal = parseSRTForPreview(original);
+      const parsedTranslated = parseSRTForPreview(translated);
 
-    if (translatedPreview) {
-      // Show translated content with confidence indicators
-      translatedPreview.innerHTML = ""; // Clear previous content
+      // Mostrar el contenido original formateado
+      originalPreview.innerHTML = formatSubtitlesForPreview(parsedOriginal);
 
+      // Mostrar el contenido traducido formateado con indicadores de confianza
       if (confidenceData.length > 0) {
         // Create preview with confidence indicators
         renderTranslatedTextWithConfidenceIndicators(
           translated,
           confidenceData,
-          translatedPreview
+          translatedPreview,
+          parsedTranslated
         );
       } else {
-        // Simple preview without indicators
-        translatedPreview.textContent = translated;
+        // Simple preview with better formatting
+        translatedPreview.innerHTML =
+          formatSubtitlesForPreview(parsedTranslated);
       }
+
+      // Aumentar la correlación visual entre subtítulos originales y traducidos
+      setTimeout(() => {
+        // Añadir data-attributes para facilitar la correlación visual
+        const originalBlocks =
+          originalPreview.querySelectorAll(".subtitle-block");
+        originalBlocks.forEach((block) => {
+          const subtitleId = block
+            .querySelector(".subtitle-id")
+            ?.textContent.trim();
+          if (subtitleId) {
+            block.dataset.subtitleId = subtitleId;
+          }
+        });
+
+        // Añadir efecto de hover sincronizado entre bloques correspondientes
+        originalBlocks.forEach((block) => {
+          const subtitleId = block.dataset.subtitleId;
+          if (subtitleId) {
+            // Al pasar el ratón sobre un bloque original, destacar el traducido correspondiente
+            block.addEventListener("mouseenter", () => {
+              const correspondingBlock = translatedPreview.querySelector(
+                `.subtitle-block[data-subtitle-id="${subtitleId}"]`
+              );
+              if (correspondingBlock) {
+                correspondingBlock.classList.add("subtitle-block--highlighted");
+              }
+            });
+
+            // Al quitar el ratón, eliminar el destacado
+            block.addEventListener("mouseleave", () => {
+              const correspondingBlock = translatedPreview.querySelector(
+                `.subtitle-block[data-subtitle-id="${subtitleId}"]`
+              );
+              if (correspondingBlock) {
+                correspondingBlock.classList.remove(
+                  "subtitle-block--highlighted"
+                );
+              }
+            });
+          }
+        });
+
+        // Hacer lo mismo para los bloques traducidos
+        const translatedBlocks =
+          translatedPreview.querySelectorAll(".subtitle-block");
+        translatedBlocks.forEach((block) => {
+          const subtitleId = block.dataset.subtitleId;
+          if (subtitleId) {
+            block.addEventListener("mouseenter", () => {
+              const correspondingBlock = originalPreview.querySelector(
+                `.subtitle-block[data-subtitle-id="${subtitleId}"]`
+              );
+              if (correspondingBlock) {
+                correspondingBlock.classList.add("subtitle-block--highlighted");
+              }
+            });
+
+            block.addEventListener("mouseleave", () => {
+              const correspondingBlock = originalPreview.querySelector(
+                `.subtitle-block[data-subtitle-id="${subtitleId}"]`
+              );
+              if (correspondingBlock) {
+                correspondingBlock.classList.remove(
+                  "subtitle-block--highlighted"
+                );
+              }
+            });
+          }
+        });
+      }, 300); // Pequeño retraso para asegurar que los elementos ya están en el DOM
+    } else {
+      // Fallback al comportamiento anterior si algún elemento falta
+      if (originalPreview) {
+        originalPreview.textContent = original;
+      }
+
+      if (translatedPreview) {
+        // Show translated content with confidence indicators
+        translatedPreview.innerHTML = ""; // Clear previous content
+
+        if (confidenceData.length > 0) {
+          // Create preview with confidence indicators
+          renderTranslatedTextWithConfidenceIndicators(
+            translated,
+            confidenceData,
+            translatedPreview
+          );
+        } else {
+          // Simple preview without indicators
+          translatedPreview.textContent = translated;
+        }
+      }
+    }
+
+    // Función interna para parsear un texto SRT para mejor visualización
+    function parseSRTForPreview(srtText) {
+      const blocks = [];
+      const parts = srtText.split(/\n\s*\n/);
+
+      for (const part of parts) {
+        const lines = part.trim().split("\n");
+        if (lines.length >= 2) {
+          const id = lines[0].trim();
+          const timeCode = lines[1].trim();
+          const text = lines.slice(2).join("<br>");
+          blocks.push({ id, timeCode, text });
+        }
+      }
+
+      return blocks;
+    }
+
+    // Función interna para formatear los subtítulos para visualización
+    function formatSubtitlesForPreview(blocks) {
+      return blocks
+        .map(
+          (block) => `
+        <div class="subtitle-block" data-subtitle-id="${block.id}">
+          <div class="subtitle-id">${block.id}</div>
+          <div class="subtitle-time">${block.timeCode}</div>
+          <div class="subtitle-text">${block.text}</div>
+        </div>
+      `
+        )
+        .join("");
     }
 
     // Show confidence statistics if available

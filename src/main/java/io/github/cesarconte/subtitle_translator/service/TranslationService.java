@@ -34,7 +34,8 @@ public class TranslationService {
     private String apiUrl;
 
     private static final String SUBTITLE_SEPARATOR = "<SUBT_DIV>";
-    private static final int GROUP_SIZE = 10; // Reduced group size for more frequent progress updates
+    private static final int GROUP_SIZE = 5; // Reduced group size for better structure preservation
+    private List<SubtitleBlock> subtitles; // References to all subtitles for processing
 
     private static LanguageDetector languageDetector;
     private static List<LanguageProfile> languageProfiles;
@@ -119,79 +120,94 @@ public class TranslationService {
             String sourceLang,
             String sessionId,
             ProgressTrackingService progressService) {
-        // Extract all subtitle texts and calculate total characters
-        List<String> textsToTranslate = new ArrayList<>();
-        int totalChars = 0;
+        // Store reference to all subtitles for the new translation approach
+        this.subtitles = subtitles;
 
+        // Calculate total characters for progress tracking
+        int totalChars = 0;
         for (SubtitleBlock subtitle : subtitles) {
             String text = String.join("\n", subtitle.getText());
-            textsToTranslate.add(text);
             totalChars += text.length();
         }
 
         // Update progress tracking with total characters
+        progressService.setTotalChars(sessionId, totalChars);
         progressService.updateProgress(sessionId, "preparing",
                 "Preparing content for translation...", 0);
 
         // Save original texts to calculate confidence later
-        List<String> originalTexts = new ArrayList<>(textsToTranslate);
-
-        // Group texts to minimize the number of API calls but still provide regular
-        // updates
-        List<List<String>> groups = new ArrayList<>();
-        for (int i = 0; i < textsToTranslate.size(); i += GROUP_SIZE) {
-            groups.add(textsToTranslate.subList(
-                    i,
-                    Math.min(i + GROUP_SIZE, textsToTranslate.size())));
+        List<String> originalTexts = new ArrayList<>();
+        for (SubtitleBlock subtitle : subtitles) {
+            originalTexts.add(String.join("\n", subtitle.getText()));
         }
 
-        // Translate each group with progress updates
-        List<String> allTranslatedTexts = new ArrayList<>();
+        // Group subtitles to minimize API calls
+        List<List<SubtitleBlock>> groups = new ArrayList<>();
+        for (int i = 0; i < subtitles.size(); i += GROUP_SIZE) {
+            groups.add(subtitles.subList(
+                    i,
+                    Math.min(i + GROUP_SIZE, subtitles.size())));
+        }
+
+        // Translate using our improved approach that preserves structure
+        List<SubtitleBlock> translatedSubtitles = new ArrayList<>();
         int translatedChars = 0;
         int groupIndex = 0;
 
-        for (List<String> group : groups) {
+        for (List<SubtitleBlock> group : groups) {
             // Update progress tracker
-            int groupTotalChars = group.stream().mapToInt(String::length).sum();
+            int groupTotalChars = 0;
+            for (SubtitleBlock subtitle : group) {
+                groupTotalChars += String.join("\n", subtitle.getText()).length();
+            }
 
             progressService.updateProgress(sessionId, "translating",
                     String.format("Translating block %d of %d...", groupIndex + 1, groups.size()),
                     translatedChars);
 
-            // Translate the group
-            String text = String.join(SUBTITLE_SEPARATOR, group);
-            String translatedText = translateText(text, targetLang, sourceLang);
-            String[] translatedTextsInGroup = translatedText.split(SUBTITLE_SEPARATOR);
+            // Prepare text with special markers for structure preservation
+            StringBuilder textWithMarkers = new StringBuilder();
 
-            // Process responses
-            for (String translated : translatedTextsInGroup) {
-                allTranslatedTexts.add(translated);
+            for (int i = 0; i < group.size(); i++) {
+                SubtitleBlock subtitle = group.get(i);
+
+                // Add subtitle identifier marker with ID
+                textWithMarkers.append("<SUBT:").append(subtitle.getId()).append(">\n");
+
+                // Add lines with markers to identify each line position
+                String[] lines = subtitle.getText();
+                for (int lineIndex = 0; lineIndex < lines.length; lineIndex++) {
+                    textWithMarkers.append("<LINE:").append(lineIndex + 1).append(">")
+                            .append(lines[lineIndex])
+                            .append("</LINE:").append(lineIndex + 1).append(">\n");
+                }
+
+                // Close subtitle marker
+                textWithMarkers.append("</SUBT:").append(subtitle.getId()).append(">");
+
+                // Add separator between subtitles, except the last one
+                if (i < group.size() - 1) {
+                    textWithMarkers.append("\n").append(SUBTITLE_SEPARATOR).append("\n");
+                }
             }
+
+            // Translate the marked text
+            String translatedMarkedText = translateText(textWithMarkers.toString(), targetLang, sourceLang);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+            // Process the translated text and extract subtitles while preserving structure
+            processTranslatedMarkedText(translatedMarkedText, group, translatedSubtitles, originalTexts);
 
             // Update translated character count for progress
             translatedChars += groupTotalChars;
             groupIndex++;
         }
 
-        // Create new subtitles with translated text and calculate confidence
-        List<SubtitleBlock> translatedSubtitles = new ArrayList<>();
-        for (int i = 0; i < subtitles.size(); i++) {
-            SubtitleBlock original = subtitles.get(i);
-            String translatedText = i < allTranslatedTexts.size() ? allTranslatedTexts.get(i) : "";
-
-            // Calculate confidence score
-            String originalText = i < originalTexts.size() ? originalTexts.get(i) : "";
-            double confidenceScore = ConfidenceCalculator.calculateConfidence(originalText, translatedText);
-
-            // Create subtitle block with confidence score
-            SubtitleBlock translated = new SubtitleBlock(
-                    original.getId(),
-                    original.getTimeCode(),
-                    translatedText.trim().split("\n"),
-                    confidenceScore);
-
-            translatedSubtitles.add(translated);
-        }
+        // Sort subtitles by ID to maintain original order
+        translatedSubtitles.sort((a, b) -> Integer.compare(a.getId(), b.getId()));
 
         // Final progress update
         progressService.updateProgress(sessionId, "finalizing", "Finalizing translation...", totalChars);
@@ -209,61 +225,157 @@ public class TranslationService {
      * @return List of translated subtitle blocks with confidence scores
      */
     public List<SubtitleBlock> translateSubtitles(List<SubtitleBlock> subtitles, String targetLang, String sourceLang) {
-        // Extract all subtitle texts into a list
-        List<String> textsToTranslate = new ArrayList<>();
-        for (SubtitleBlock subtitle : subtitles) {
-            textsToTranslate.add(String.join("\n", subtitle.getText()));
+        // Mejorado: Preservar mejor la estructura del texto usando marcadores
+        // especiales para cada línea
+
+        // Group subtitles to minimize API calls
+        List<List<SubtitleBlock>> groups = new ArrayList<>();
+        for (int i = 0; i < subtitles.size(); i += GROUP_SIZE) {
+            groups.add(subtitles.subList(
+                    i,
+                    Math.min(i + GROUP_SIZE, subtitles.size())));
         }
 
         // Save original texts to calculate confidence later
-        List<String> originalTexts = new ArrayList<>(textsToTranslate);
-
-        // Group texts to minimize the number of API calls
-        List<List<String>> groups = new ArrayList<>();
-        for (int i = 0; i < textsToTranslate.size(); i += GROUP_SIZE) {
-            groups.add(textsToTranslate.subList(
-                    i,
-                    Math.min(i + GROUP_SIZE, textsToTranslate.size())));
+        List<String> originalTexts = new ArrayList<>();
+        for (SubtitleBlock subtitle : subtitles) {
+            originalTexts.add(String.join("\n", subtitle.getText()));
         }
 
-        // Translate each group
-        List<String> translatedGroups = new ArrayList<>();
-        for (List<String> group : groups) {
-            String text = String.join(SUBTITLE_SEPARATOR, group);
-            String translatedText = translateText(text, targetLang, sourceLang);
-            translatedGroups.add(translatedText);
-        }
-
-        // Process responses and reconstruct subtitles
-        List<String> allTranslatedTexts = new ArrayList<>();
-        for (String translatedGroup : translatedGroups) {
-            String[] translatedTextsInGroup = translatedGroup.split(SUBTITLE_SEPARATOR);
-            for (String translatedText : translatedTextsInGroup) {
-                allTranslatedTexts.add(translatedText);
-            }
-        }
-
-        // Create new subtitles with translated text and calculate confidence
+        // Translate each group with structure preservation
         List<SubtitleBlock> translatedSubtitles = new ArrayList<>();
-        for (int i = 0; i < subtitles.size(); i++) {
-            SubtitleBlock original = subtitles.get(i);
-            String translatedText = i < allTranslatedTexts.size() ? allTranslatedTexts.get(i) : "";
 
-            // Calculate confidence score
-            String originalText = i < originalTexts.size() ? originalTexts.get(i) : "";
-            double confidenceScore = ConfidenceCalculator.calculateConfidence(originalText, translatedText);
+        for (List<SubtitleBlock> group : groups) {
+            // Prepare text with special markers for structure preservation
+            StringBuilder textWithMarkers = new StringBuilder();
 
-            // Create subtitle block with confidence score
-            SubtitleBlock translated = new SubtitleBlock(
-                    original.getId(),
-                    original.getTimeCode(),
-                    translatedText.trim().split("\n"),
-                    confidenceScore);
+            for (int i = 0; i < group.size(); i++) {
+                SubtitleBlock subtitle = group.get(i);
 
-            translatedSubtitles.add(translated);
+                // Add subtitle identifier marker with ID
+                textWithMarkers.append("<SUBT:").append(subtitle.getId()).append(">\n");
+
+                // Add lines with markers to identify each line position
+                String[] lines = subtitle.getText();
+                for (int lineIndex = 0; lineIndex < lines.length; lineIndex++) {
+                    textWithMarkers.append("<LINE:").append(lineIndex + 1).append(">")
+                            .append(lines[lineIndex])
+                            .append("</LINE:").append(lineIndex + 1).append(">\n");
+                }
+
+                // Close subtitle marker
+                textWithMarkers.append("</SUBT:").append(subtitle.getId()).append(">");
+
+                // Add separator between subtitles, except the last one
+                if (i < group.size() - 1) {
+                    textWithMarkers.append("\n").append(SUBTITLE_SEPARATOR).append("\n");
+                }
+            }
+
+            // Translate the marked text
+            String translatedMarkedText = translateText(textWithMarkers.toString(), targetLang, sourceLang);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+            // Process the trnsatd text and extract subtitls while preserving structure
+            processTranslatedMarkedText(translatedMarkedText, group, translatedSubtitles, originalTexts);
         }
+
+        // Sort subtitles by ID to maintain original order
+        translatedSubtitles.sort((a, b) -> Integer.compare(a.getId(), b.getId()));
 
         return translatedSubtitles;
+    }
+
+    /**
+     * Process translated text with markers and extract structured subtitles
+     *
+     * @param translatedText      The translated text with structure markers
+     * @param originalGroup       The original subtitle blocks for reference
+     * @param translatedSubtitl
+
+     * @param originalTexts       List of original texts for confidence calculation
+     */
+    private void processTranslatedMarkedText(String translatedText, List<SubtitleBlock> originalGroup,
+            List<SubtitleBlock> translatedSubtitles, List<String> originalTexts) {
+        // Separate by subtitle markers
+        String[] subtitleBlocks = translatedText.split(SUBTITLE_SEPARATOR);
+
+        for (String block : subtitleBlocks) {
+            // Extract subtitle ID
+            java.util.regex.Pattern idPattern = java.util.regex.Pattern.compile("<SUBT:(\\d+)>");
+            java.util.regex.Matcher idMatcher = idPattern.matcher(block);
+
+            if (idMatcher.find()) {
+                int id = Integer.parseInt(idMatcher.group(1));
+
+                // Find original subtitle for this ID
+                SubtitleBlock originalSubtitle = originalGroup.stream()
+                        .filter(s -> s.getId() == id)
+                        .findFirst()
+                        .orElse(null);
+
+                if (originalSubtitle != null) {
+                    // Extract lines with markers
+                    java.util.regex.Pattern linePattern = java.util.regex.Pattern
+                            .compile("<LINE:\\d+>(.*?)</LINE:\\d+>");
+                    java.util.regex.Matcher lineMatcher = linePattern.matcher(block);
+
+                    List<String> translatedLines = new ArrayList<>();
+                    while (lineMatcher.find()) {
+                        translatedLines.add(lineMatcher.group(1).trim());
+                    }
+
+                    // If no lines were found with markers, extract text between SUBT tags
+                    if (translatedLines.isEmpty()) {
+                        String extractedText = block.replaceAll("<SUBT:\\d+>\\s*", "")
+                                .replaceAll("\\s*</SUBT:\\d+>", "")
+                                .trim();
+
+                        if (!extractedText.isEmpty()) {
+                            translatedLines = List.of(extractedText.split("\n"));
+                        } else {
+                            // Fallback to original structure but with empty text
+                            translatedLines = new ArrayList<>();
+                            for (int i = 0; i < originalSubtitle.getText().length; i++) {
+                                translatedLines.add("");
+                            }
+                        }
+                    }
+
+                    // Convert list to array
+                    String[] translatedLineArray = translatedLines.toArray(new String[0]);
+
+                    // Find the original text for confidence calculation
+                    int originalIndex = -1;
+                    for (int i = 0; i < subtitles.size(); i++) {
+                        if (subtitles.get(i).getId() == id) {
+                            originalIndex = i;
+                            break;
+                        }
+                    }
+
+                    String originalText = originalIndex >= 0 ? originalTexts.get(originalIndex)
+                            : String.join("\n", originalSubtitle.getText());
+                    String joinedTranslatedText = String.join("\n", translatedLines);
+
+                    // Calculate confidence
+                    double confidenceScore = ConfidenceCalculator.calculateConfidence(originalText,
+                            joinedTranslatedText);
+
+                    // Create translated subtitle block with original time code
+                    SubtitleBlock translatedSubtitle = new SubtitleBlock(
+                            id,
+                            originalSubtitle.getTimeCode(),
+                            translatedLineArray,
+                            confidenceScore);
+
+                    translatedSubtitles.add(translatedSubtitle);
+                }
+            }
+        }
     }
 
     /**

@@ -34,6 +34,43 @@ public class ProgressTrackingService {
     }
 
     /**
+     * Sets the total characters for a translation session after it has started.
+     * This is useful if the total characters are not known at the initial
+     * startTracking call.
+     *
+     * @param sessionId  Translation session ID
+     * @param totalChars The total number of characters to be translated
+     */
+    public void setTotalChars(String sessionId, int totalChars) {
+        TranslationProgress currentProgress = progressMap.get(sessionId);
+        if (currentProgress == null) {
+            // Optionally log an error or throw an exception
+            System.err.println("Session ID not found for setTotalChars: " + sessionId);
+            return;
+        }
+
+        // Create a new TranslationProgress object with the updated totalChars
+        // and other fields from currentProgress.
+        // Recalculate progressPercentage. Time estimates will be updated by subsequent
+        // calls to updateProgress.
+        double newProgressPercentage = (totalChars > 0)
+                ? (double) currentProgress.getTranslatedChars() / totalChars * 100
+                : 0;
+
+        // Assuming TranslationProgress has getters for phase, message, translatedChars
+        // and a constructor that allows setting these fields.
+        // We use the simpler constructor form here, similar to what's used in
+        // startTracking.
+        TranslationProgress updatedProgress = new TranslationProgress(
+                currentProgress.getPhase(),
+                currentProgress.getMessage(),
+                totalChars, // new total characters
+                currentProgress.getTranslatedChars(),
+                newProgressPercentage);
+        progressMap.put(sessionId, updatedProgress);
+    }
+
+    /**
      * Updates the progress for a translation session
      * 
      * @param sessionId       Translation session ID

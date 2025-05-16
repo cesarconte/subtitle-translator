@@ -9,94 +9,153 @@
  * @param {string} text - Complete translated text
  * @param {Array} confidenceData - Confidence data per subtitle
  * @param {HTMLElement} container - Container element where to show the result
+ * @param {Array} [parsedBlocks=null] - Optional pre-parsed blocks to use instead of parsing text
  */
 export function renderTranslatedTextWithConfidenceIndicators(
   text,
   confidenceData,
-  container
+  container,
+  parsedBlocks = null
 ) {
-  // Split text into subtitle blocks
-  const blocks = text.split("\n\n").filter((block) => block.trim() !== "");
+  container.innerHTML = ""; // Clear previous content
+
+  // Use parsed blocks if provided, or parse the text directly
+  const blocks =
+    parsedBlocks ||
+    text
+      .split("\n\n")
+      .filter((block) => block.trim() !== "")
+      .map((block) => {
+        const lines = block.split("\n");
+        if (lines.length < 3) return null;
+
+        const id = lines[0].trim();
+        const timeCode = lines[1].trim();
+        const textContent = lines.slice(2).join("<br>");
+        return { id, timeCode, text: textContent };
+      })
+      .filter((block) => block !== null);
 
   blocks.forEach((block, index) => {
-    const lines = block.split("\n");
-    if (lines.length < 3) return; // Ignore incomplete blocks
-
     try {
       // Extraer el ID del subtítulo para encontrar sus datos de confianza
-      const id = parseInt(lines[0].trim(), 10);
+      const id = parseInt(parsedBlocks ? block.id : block, 10);
       const confidenceInfo = confidenceData.find((item) => item.id === id);
+      const confidenceLevel = confidenceInfo?.level || "high";
 
-      // Crear el elemento para el bloque
+      // Crear el elemento para el bloque con la clase de confianza
       const blockEl = document.createElement("div");
-      blockEl.className = `subtitle-block subtitle-block--${
-        confidenceInfo?.level || "high"
-      }`;
+      blockEl.className = `subtitle-block subtitle-block--${confidenceLevel}`;
+      blockEl.dataset.subtitleId = id; // Añadimos el ID como data attribute para facilitar la correlación
 
-      // Número de subtítulo
-      const numberEl = document.createElement("div");
-      numberEl.className = "subtitle-block__number";
-      numberEl.textContent = lines[0];
+      if (parsedBlocks) {
+        // Si ya tenemos los bloques parseados, usamos ese formato
+        // Número de subtítulo
+        const numberEl = document.createElement("div");
+        numberEl.className = "subtitle-id";
+        numberEl.textContent = block.id;
 
-      // Código de tiempo
-      const timeCodeEl = document.createElement("div");
-      timeCodeEl.className = "subtitle-block__timecode";
-      timeCodeEl.textContent = lines[1];
+        // Código de tiempo
+        const timeCodeEl = document.createElement("div");
+        timeCodeEl.className = "subtitle-time";
+        timeCodeEl.textContent = block.timeCode;
 
-      // Texto del subtítulo
-      const textEl = document.createElement("div");
-      textEl.className = "subtitle-block__text";
-      lines.slice(2).forEach((line) => {
-        if (line.trim()) {
-          const lineEl = document.createElement("p");
-          lineEl.textContent = line;
-          textEl.appendChild(lineEl);
-        }
-      });
+        // Texto del subtítulo
+        const textEl = document.createElement("div");
+        textEl.className = "subtitle-text";
+        textEl.innerHTML = block.text; // Usamos innerHTML porque ya contiene <br>
 
-      // Indicador de confianza si está disponible
-      if (confidenceInfo) {
+        // Indicador de confianza usando el nuevo estilo visual
         const indicatorEl = document.createElement("div");
-        indicatorEl.className = `confidence-indicator confidence-indicator--${confidenceInfo.level}`;
-        indicatorEl.classList.add("confidence-tooltip");
-        indicatorEl.setAttribute(
-          "data-tooltip",
-          `Confidence: ${Math.round(confidenceInfo.confidence * 100)}%`
-        );
+        indicatorEl.className = `confidence-badge confidence-badge--${confidenceLevel}`;
+        indicatorEl.innerHTML = `
+          <span class="confidence-badge__icon">${getConfidenceIcon(
+            confidenceLevel
+          )}</span>
+          <span class="confidence-badge__text">${getConfidenceLevelText(
+            confidenceLevel
+          )}</span>
+        `;
 
-        // Icono
-        const iconEl = document.createElement("span");
-        iconEl.className = "confidence-indicator__icon";
-        iconEl.innerHTML = getConfidenceIcon(confidenceInfo.level);
-
-        // Texto
-        const textLabelEl = document.createElement("span");
-        textLabelEl.className = "confidence-indicator__text";
-        textLabelEl.textContent = getConfidenceLevelText(confidenceInfo.level);
-
-        indicatorEl.appendChild(iconEl);
-        indicatorEl.appendChild(textLabelEl);
+        // Añadir los elementos al bloque en el orden deseado
         blockEl.appendChild(indicatorEl);
-      }
+        blockEl.appendChild(numberEl);
+        blockEl.appendChild(timeCodeEl);
+        blockEl.appendChild(textEl);
+      } else {
+        // Formato tradicional (código existente)
+        const lines = block.split("\n");
 
-      // Añadir todos los elementos al bloque
-      blockEl.appendChild(numberEl);
-      blockEl.appendChild(timeCodeEl);
-      blockEl.appendChild(textEl);
+        // Número de subtítulo
+        const numberEl = document.createElement("div");
+        numberEl.className = "subtitle-block__number";
+        numberEl.textContent = lines[0];
+
+        // Código de tiempo
+        const timeCodeEl = document.createElement("div");
+        timeCodeEl.className = "subtitle-block__timecode";
+        timeCodeEl.textContent = lines[1];
+
+        // Texto del subtítulo
+        const textEl = document.createElement("div");
+        textEl.className = "subtitle-block__text";
+        lines.slice(2).forEach((line) => {
+          if (line.trim()) {
+            const lineEl = document.createElement("p");
+            lineEl.textContent = line;
+            textEl.appendChild(lineEl);
+          }
+        });
+
+        // Indicador de confianza si está disponible
+        if (confidenceInfo) {
+          const indicatorEl = document.createElement("div");
+          indicatorEl.className = `confidence-indicator confidence-indicator--${confidenceLevel}`;
+          indicatorEl.classList.add("confidence-tooltip");
+          indicatorEl.setAttribute(
+            "data-tooltip",
+            `Confidence: ${Math.round(confidenceInfo.confidence * 100)}%`
+          );
+
+          // Icono
+          const iconEl = document.createElement("span");
+          iconEl.className = "confidence-indicator__icon";
+          iconEl.innerHTML = getConfidenceIcon(confidenceLevel);
+
+          // Texto
+          const textLabelEl = document.createElement("span");
+          textLabelEl.className = "confidence-indicator__text";
+          textLabelEl.textContent = getConfidenceLevelText(confidenceLevel);
+
+          indicatorEl.appendChild(iconEl);
+          indicatorEl.appendChild(textLabelEl);
+          blockEl.appendChild(indicatorEl);
+        }
+
+        // Añadir todos los elementos al bloque
+        blockEl.appendChild(numberEl);
+        blockEl.appendChild(timeCodeEl);
+        blockEl.appendChild(textEl);
+      }
 
       // Añadir el bloque al contenedor
       container.appendChild(blockEl);
 
       // Añadir separador excepto para el último bloque
-      if (index < blocks.length - 1) {
+      if (index < blocks.length - 1 && !parsedBlocks) {
         container.appendChild(document.createElement("hr"));
       }
     } catch (e) {
+      console.error("Error rendering subtitle block:", e);
       // En caso de error, mostrar el bloque sin formato
       const plainBlock = document.createElement("pre");
-      plainBlock.textContent = block;
+      plainBlock.textContent =
+        typeof block === "string" ? block : JSON.stringify(block);
       container.appendChild(plainBlock);
-      container.appendChild(document.createElement("hr"));
+
+      if (!parsedBlocks) {
+        container.appendChild(document.createElement("hr"));
+      }
     }
   });
 }

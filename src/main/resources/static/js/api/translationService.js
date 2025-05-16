@@ -128,42 +128,132 @@ export async function translateSubtitles(
   targetLang,
   sourceLang = null
 ) {
-  // Extraer todos los textos de subtítulos en un array
-  const textsToTranslate = subtitles.map((sub) => sub.text.join("\n"));
+  // Traducir cada subtítulo individualmente para mantener mejor la estructura
+  // Esto garantiza que cada subtítulo mantenga su formato y estructura
+  const translatedSubtitles = [];
 
-  // Agrupar textos para minimizar el número de llamadas a la API
-  // DeepL tiene un límite de caracteres por petición, así que agrupamos varios subtítulos
-  const groupSize = 20; // Número de subtítulos por petición
+  // Crear grupos más pequeños para minimizar el número de llamadas a la API
+  // pero manteniendo mejor la correlación entre original y traducción
+  const groupSize = 10; // Reducimos el tamaño del grupo para mejor precisión
   const groups = [];
 
-  for (let i = 0; i < textsToTranslate.length; i += groupSize) {
-    groups.push(textsToTranslate.slice(i, i + groupSize));
+  for (let i = 0; i < subtitles.length; i += groupSize) {
+    groups.push(subtitles.slice(i, i + groupSize));
   }
 
-  // Traducir cada grupo
-  const translatedGroups = await Promise.all(
-    groups.map((group) => {
-      const text = group.join("\n<SUBT_DIV>\n"); // Separador especial entre subtítulos
-      return translateText(text, targetLang, sourceLang);
-    })
-  );
+  // Procesar cada grupo
+  for (const group of groups) {
+    // Preparamos un texto donde cada subtítulo tiene marcadores especiales
+    // que incluyen su ID y estructura de líneas para preservar el formato
+    const textsWithMarkers = group.map((subtitle) => {
+      // Usamos un formato especial que incluye metadatos sobre la estructura
+      const lines = subtitle.text;
+      const linesWithMarkers = lines
+        .map((line, idx) => `<LINE:${idx + 1}>${line}</LINE:${idx + 1}>`)
+        .join("\n");
 
-  // Procesar las respuestas y reconstruir los subtítulos
-  let allTranslatedTexts = [];
-  for (const translatedGroup of translatedGroups) {
-    const translatedTextsInGroup = translatedGroup.split("<SUBT_DIV>");
-    allTranslatedTexts = allTranslatedTexts.concat(translatedTextsInGroup);
+      return `<SUBT:${subtitle.id}>\n${linesWithMarkers}\n</SUBT:${subtitle.id}>`;
+    });
+
+    // Unimos todos los textos con marcadores
+    const combinedText = textsWithMarkers.join("\n\n");
+
+    // Traducimos el texto combinado
+    const translatedCombined = await translateText(
+      combinedText,
+      targetLang,
+      sourceLang
+    );
+
+    // Procesamos la respuesta para extraer cada subtítulo traducido
+    const subtitleMatches =
+      translatedCombined.match(/<SUBT:\d+>[\s\S]*?<\/SUBT:\d+>/g) || [];
+
+    for (const subtitleMatch of subtitleMatches) {
+      // Extraemos el ID del subtítulo
+      const idMatch = subtitleMatch.match(/<SUBT:(\d+)>/);
+      if (!idMatch) continue;
+
+      const id = parseInt(idMatch[1], 10);
+
+      // Encontramos el subtítulo original correspondiente
+      const originalSubtitle = group.find((s) => s.id === id);
+      if (!originalSubtitle) continue;
+
+      // Extraemos las líneas traducidas
+      const lineMatches =
+        subtitleMatch.match(/<LINE:\d+>([\s\S]*?)<\/LINE:\d+>/g) || [];
+      const translatedLines = lineMatches.map((lineMatch) => {
+        const textMatch = lineMatch.match(/<LINE:\d+>([\s\S]*?)<\/LINE:\d+>/);
+        return textMatch ? textMatch[1].trim() : "";
+      });
+
+      // Si no se encontraron líneas con el formato esperado, extraemos el texto entre tags SUBT
+      let textToUse = translatedLines;
+      if (translatedLines.length === 0) {
+        const rawText = subtitleMatch
+          .replace(/<SUBT:\d+>\n?/, "")
+          .replace(/\n?<\/SUBT:\d+>/, "")
+          .trim();
+        textToUse = rawText.split("\n");
+      }
+
+      // Creamos el subtítulo traducido manteniendo el ID y timeCode originales
+      translatedSubtitles.push({
+        id: originalSubtitle.id,
+        timeCode: originalSubtitle.timeCode,
+        text: textToUse,
+      });
+    }
   }
 
-  // Crear nuevos subtítulos con el texto traducido
-  return subtitles.map((subtitle, index) => {
-    const translatedText = allTranslatedTexts[index] || "";
-    return {
-      id: subtitle.id,
-      timeCode: subtitle.timeCode,
-      text: translatedText.trim().split("\n"),
-    };
-  });
+  // Ordenamos los subtítulos por ID para mantener el orden original
+  translatedSubtitles.sort((a, b) => a.id - b.id);
+
+  // Verificamos si hay subtítulos que no se tradujeron correctamente
+  if (translatedSubtitles.length < subtitles.length) {
+    // Para los subtítulos faltantes, usamos el enfoque anterior como fallback
+    const missingIds = subtitles
+      .filter((s) => !translatedSubtitles.some((ts) => ts.id === s.id))
+      .map((s) => s.id);
+
+    if (missingIds.length > 0) {
+      console.warn(
+        `Algunos subtítulos (IDs: ${missingIds.join(
+          ", "
+        )}) no se pudieron procesar con el nuevo método. Usando método alternativo.`
+      );
+
+      // Extraer todos los textos de subtítulos faltantes
+      const missingSubtitles = subtitles.filter((s) =>
+        missingIds.includes(s.id)
+      );
+      const textsToTranslate = missingSubtitles.map((sub) =>
+        sub.text.join("\n")
+      );
+
+      // Traducir los textos faltantes
+      const translatedTexts = await Promise.all(
+        textsToTranslate.map((text) =>
+          translateText(text, targetLang, sourceLang)
+        )
+      );
+
+      // Añadir los subtítulos faltantes con sus traducciones
+      missingSubtitles.forEach((subtitle, idx) => {
+        translatedSubtitles.push({
+          id: subtitle.id,
+          timeCode: subtitle.timeCode,
+          text: translatedTexts[idx].trim().split("\n"),
+        });
+      });
+
+      // Reordenar nuevamente
+      translatedSubtitles.sort((a, b) => a.id - b.id);
+    }
+  }
+
+  return translatedSubtitles;
 }
 
 /**

@@ -160,11 +160,24 @@
   border-bottom: 1px dashed var(--neutral-300);
 }
 
+/* Controlar la visibilidad de los botones de edición */
+#saveChangesButton,
+#cancelEditsButton {
+  display: none;
+  visibility: hidden;
+}
+
+.editor-active #saveChangesButton,
+.editor-active #cancelEditsButton {
+  display: inline-flex;
+  visibility: visible;
+}
+
 /* Garantizar que el contenido traducido siempre sea visible */
 .preview__translated .preview__text,
 #translatedPreview {
-  display: block !important;
-  visibility: visible !important;
+  display: block;
+  visibility: visible;
 }
 
 /* --- Responsive adjustments --- */

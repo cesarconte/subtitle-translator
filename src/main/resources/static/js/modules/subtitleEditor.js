@@ -104,18 +104,9 @@ export function initSubtitleEditor(options) {
       editButton.setAttribute("aria-pressed", "true");
       editButton.classList.add("button--active");
 
-      // Show editor controls
-      if (saveButton) {
-        saveButton.hidden = false;
-        saveButton.style.display = "";
-        console.log("toggleEditMode: Made save button visible");
-      }
-
-      if (cancelButton) {
-        cancelButton.hidden = false;
-        cancelButton.style.display = "";
-        console.log("toggleEditMode: Made cancel button visible");
-      }
+      // Los botones se mostrarán automáticamente gracias al CSS
+      // cuando se añada la clase editor-active al contenedor
+      console.log("toggleEditMode: Los botones se mostrarán vía CSS");
 
       // El contenido traducido debe permanecer siempre visible, no necesitamos hacer nada especial
       if (!translatedPreview) {
@@ -200,16 +191,9 @@ export function initSubtitleEditor(options) {
       editButton.setAttribute("aria-pressed", "false");
       editButton.classList.remove("button--active");
 
-      // Hide editor controls
-      if (saveButton) {
-        saveButton.hidden = true;
-        console.log("toggleEditMode: Hid save button");
-      }
-
-      if (cancelButton) {
-        cancelButton.hidden = true;
-        console.log("toggleEditMode: Hid cancel button");
-      }
+      // Los botones se ocultarán automáticamente gracias al CSS
+      // cuando se quite la clase editor-active del contenedor
+      console.log("toggleEditMode: Los botones se ocultarán vía CSS");
 
       // Show translated preview
       if (translatedPreview) {
@@ -290,10 +274,8 @@ export function initSubtitleEditor(options) {
     editButton.classList.remove("button--active");
     console.log("saveChanges: Updated edit button state");
 
-    // Hide the editor controls
-    saveButton.hidden = true;
-    cancelButton.hidden = true;
-    console.log("saveChanges: Hidden editor controls");
+    // Los botones de editor se ocultarán automáticamente por CSS
+    console.log("saveChanges: Los botones se ocultarán vía CSS");
 
     showSuccessToast("Changes saved successfully");
   };
@@ -329,10 +311,8 @@ export function initSubtitleEditor(options) {
     editButton.classList.remove("button--active");
     console.log("cancelEditing: Updated edit button state");
 
-    // Hide the editor controls
-    saveButton.hidden = true;
-    cancelButton.hidden = true;
-    console.log("cancelEditing: Hidden editor controls");
+    // Los botones de editor se ocultarán automáticamente por CSS
+    console.log("cancelEditing: Los botones se ocultarán vía CSS");
 
     showSuccessToast("Editing cancelled");
   };
@@ -458,9 +438,8 @@ export function initSubtitleEditor(options) {
     });
   }
 
-  // Initial state - hide editor controls
-  if (saveButton) saveButton.hidden = true;
-  if (cancelButton) cancelButton.hidden = true;
+  // No necesitamos hacer ocultar los botones manualmente
+  // ya que están controlados por CSS y la clase editor-active
   // El editorContainer ya está oculto por CSS
 
   // Return public API
