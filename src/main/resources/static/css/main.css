@@ -9,6 +9,7 @@
 /* Utilidades */
 @import url("utils/variables.css");
 @import url("utils/animations.css");
+@import url("utils/utilities.css");
 
 /* Layout */
 @import url("layout/grid.css");

@@ -511,3 +511,20 @@ export function cancelTranslation() {
   }
   return false;
 }
+
+/**
+ * Fetches available DeepL glossaries from the backend
+ * @returns {Promise<Array<{id: string, name: string, source_lang: string, target_lang: string}>>}
+ */
+export async function fetchAvailableGlossaries() {
+  try {
+    const response = await fetch("/api/translate/glossaries");
+    if (!response.ok) {
+      throw new Error("Failed to fetch glossaries");
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching glossaries:", error);
+    return [];
+  }
+}

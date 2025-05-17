@@ -11,6 +11,7 @@ import { initSubtitleEditor } from "./modules/subtitleEditor.js";
 import {
   configureTranslationService,
   setFileName,
+  fetchAvailableGlossaries,
 } from "./api/translationService.js";
 import { showErrorToast, showSuccessToast } from "./utils/toast.js";
 import navAnimation from "./modules/navAnimation.js";
@@ -194,6 +195,35 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     },
   });
+
+  // Glossary selector logic
+  async function setupGlossarySelector() {
+    const glossaryInput = document.getElementById("glossaryId");
+    if (!glossaryInput) return;
+    // Try to fetch glossaries from backend
+    const glossaries = await fetchAvailableGlossaries();
+    if (glossaries && glossaries.length > 0) {
+      // Create a select element
+      const select = document.createElement("select");
+      select.id = "glossaryId";
+      select.name = "glossaryId";
+      select.className = glossaryInput.className;
+      select.innerHTML =
+        '<option value="">No glossary</option>' +
+        glossaries
+          .map(
+            (g) =>
+              `<option value="${g.id}">${g.name} (${g.source_lang}→${g.target_lang})</option>`
+          )
+          .join("");
+      glossaryInput.parentNode.replaceChild(select, glossaryInput);
+    } else {
+      // No glossaries: keep as text input, but update placeholder
+      glossaryInput.placeholder =
+        "No glossaries found. Enter ID manually (optional)";
+    }
+  }
+  setupGlossarySelector();
 
   // Initialize subtitle editor
   subtitleEditor = initSubtitleEditor({

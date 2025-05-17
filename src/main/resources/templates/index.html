@@ -228,15 +228,25 @@
               </p>
             </div>
 
-            <!-- Glossary selection - Hidden for now, can be enabled when glossary support is added -->
-            <div class="form-group" style="display: none">
+            <!-- Glossary selection - Now visible for user input -->
+            <div class="form-group">
               <label for="glossaryId" class="form-label">Glossary:</label>
-              <select id="glossaryId" name="glossaryId" class="select-base">
-                <option value="">No glossary</option>
-                <!-- Glossary options would be populated dynamically -->
-              </select>
+              <input
+                type="text"
+                id="glossaryId"
+                name="glossaryId"
+                class="input-base w-100"
+                placeholder="Enter DeepL glossary ID (optional)"
+              />
               <p class="form-help">
-                Select a custom glossary to use for translation
+                Enter your DeepL glossary ID to prevent translation of specific
+                names or terms.
+                <a
+                  href="https://www.deepl.com/pro-api?cta=header-pro-api/"
+                  target="_blank"
+                  rel="noopener"
+                  >How to create a glossary?</a
+                >
               </p>
             </div>
           </div>

@@ -151,3 +151,52 @@
     font-size: calc(var(--font-size-xs) - 1px);
   }
 }
+
+/* Estilos para las líneas de subtítulos */
+.subtitle-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.1rem;
+  padding: 0.1rem 0.25rem;
+  border-radius: 4px;
+  font-size: var(--font-size-base);
+  background: none;
+}
+
+.subtitle-line--over {
+  background-color: #fff3cd;
+  border-left: 3px solid #ffc107;
+}
+
+.subtitle-line--ok {
+  background-color: #e7fbe7;
+  border-left: 3px solid #28a745;
+}
+
+.subtitle-line__count {
+  font-size: 0.85em;
+  margin-left: 0.5em;
+  font-family: var(--font-mono);
+  display: flex;
+  align-items: center;
+  gap: 0.2em;
+}
+
+.subtitle-line__count--over {
+  color: #b8860b;
+  font-weight: bold;
+}
+
+.subtitle-line__count--ok {
+  color: #218838;
+}
+
+.subtitle-line__icon {
+  margin-left: 0.2em;
+  font-size: 1em;
+}
+
+.subtitle-line__icon--ok {
+  color: #218838;
+}

@@ -157,7 +157,29 @@ export function initSubtitleEditor(options) {
           const textEditor = document.createElement("div");
           textEditor.className = "subtitle-editor__text";
           textEditor.contentEditable = true;
-          textEditor.textContent = block.text.join("\n");
+          // Render each line with char count and marking
+          textEditor.innerHTML = block.text
+            .map((line) => {
+              const charCount = line.length;
+              const overLimit = charCount > 40;
+              return `<div class="subtitle-line${
+                overLimit ? " subtitle-line--over" : " subtitle-line--ok"
+              }">
+              <span class="subtitle-line__text">${line}</span>
+              <span class="subtitle-line__count${
+                overLimit
+                  ? " subtitle-line__count--over"
+                  : " subtitle-line__count--ok"
+              }" title="${overLimit ? "Exceeds 40 characters" : "OK"}">
+                ${charCount} ${
+                overLimit
+                  ? '<span class="subtitle-line__icon" aria-label="Over limit" title="Over 40 characters">⚠️</span>'
+                  : '<span class="subtitle-line__icon subtitle-line__icon--ok" aria-label="OK" title="Within limit">✔️</span>'
+              }
+              </span>
+            </div>`;
+            })
+            .join("");
           textEditor.setAttribute("aria-label", `Edit subtitle ${block.id}`);
 
           // Add confidence indicator if available

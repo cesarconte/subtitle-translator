@@ -204,13 +204,39 @@ export function initPreviewer(options) {
 
     // Función interna para formatear los subtítulos para visualización
     function formatSubtitlesForPreview(blocks) {
+      // Helper to render each line with char count and marking
+      function renderLine(line) {
+        const charCount = line.length;
+        const overLimit = charCount > 40;
+        return `<div class="subtitle-line${
+          overLimit ? " subtitle-line--over" : " subtitle-line--ok"
+        }">
+          <span class="subtitle-line__text">${line}</span>
+          <span class="subtitle-line__count${
+            overLimit
+              ? " subtitle-line__count--over"
+              : " subtitle-line__count--ok"
+          }" title="${overLimit ? "Exceeds 40 characters" : "OK"}">
+            ${charCount} ${
+          overLimit
+            ? '<span class="subtitle-line__icon" aria-label="Over limit" title="Over 40 characters">⚠️</span>'
+            : '<span class="subtitle-line__icon subtitle-line__icon--ok" aria-label="OK" title="Within limit">✔️</span>'
+        }
+          </span>
+        </div>`;
+      }
       return blocks
         .map(
           (block) => `
         <div class="subtitle-block" data-subtitle-id="${block.id}">
           <div class="subtitle-id">${block.id}</div>
           <div class="subtitle-time">${block.timeCode}</div>
-          <div class="subtitle-text">${block.text}</div>
+          <div class="subtitle-text">
+            ${block.text
+              .split("<br>")
+              .map((line) => renderLine(line))
+              .join("")}
+          </div>
         </div>
       `
         )

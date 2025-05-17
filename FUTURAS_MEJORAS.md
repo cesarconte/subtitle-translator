@@ -33,13 +33,8 @@ Este documento recopila todas las posibles mejoras y nuevas funcionalidades para
 
 - [x] **Historial de traducciones**:
   - [x] Guardar traducciones previas (Implementado: 14 de mayo de 2025)
-  - [ ] Acceso rápido a trabajos recientes
-- [ ] **Soporte para múltiples formatos de subtítulos**:
-  - [ ] .ass
-  - [ ] .vtt
-  - [ ] .sub
-  - [ ] .sbv
-- [x] **Edición post-traducción**: Permitir ajustar manualmente el texto traducido con tutorial interactivo (Implementado: 14 de mayo de 2025)
+  - [x] Acceso rápido a trabajos recientes
+- [x] **Edición post-traducción**: Permitir ajustar manualmente el texto traducido (Implementado: 14 de mayo de 2025)
 
 ### Prioridad Media
 
@@ -47,7 +42,6 @@ Este documento recopila todas las posibles mejoras y nuevas funcionalidades para
   - [ ] Organizar traducciones por proyectos
   - [ ] Etiquetas y búsqueda
 - [ ] **Glosario personalizado**: Términos específicos y sus traducciones preferidas
-- [ ] **Traducción por lotes**: Procesar múltiples archivos de subtítulos a la vez
 - [ ] **Previsualización de subtítulos**:
   - [ ] Reproductor de video simple para archivos locales
   - [ ] Sincronización de subtítulos con el video
@@ -63,7 +57,6 @@ Este documento recopila todas las posibles mejoras y nuevas funcionalidades para
 
 ### Prioridad Alta
 
-- [ ] **Exportación a múltiples formatos**: Convertir entre diferentes formatos
 - [ ] **Compartir traducciones**: Generar enlaces para compartir resultados
 
 ### Prioridad Media
@@ -73,7 +66,6 @@ Este documento recopila todas las posibles mejoras y nuevas funcionalidades para
 
 ### Prioridad Baja
 
-- [ ] **Integración con servicios de almacenamiento**: Google Drive, Dropbox, etc.
 - [ ] **Integración con software de edición de video**: Marcadores de tiempo, etc.
 
 ## Herramientas de Revisión y Calidad
@@ -82,6 +74,7 @@ Este documento recopila todas las posibles mejoras y nuevas funcionalidades para
 
 - [ ] **Corrector ortográfico/gramatical**: Verificar errores en el texto traducido
 - [x] **Detector de sincronización**: Alertar sobre subtítulos potencialmente mal sincronizados (Implementado: 12 de mayo de 2025)
+- [x] **Validación de formato**: Asegurar que los subtítulos cumplen con estándares (caracteres por línea, etc.) (Implementado: 17 de mayo de 2025)
 
 ### Prioridad Media
 
@@ -91,7 +84,6 @@ Este documento recopila todas las posibles mejoras y nuevas funcionalidades para
 ### Prioridad Baja
 
 - [ ] **Detección de jerga/argot**: Identificar expresiones difíciles de traducir
-- [ ] **Validación de formato**: Asegurar que los subtítulos cumplen con estándares (caracteres por línea, etc.)
 
 ## Mejoras Técnicas
 
@@ -103,39 +95,26 @@ Este documento recopila todas las posibles mejoras y nuevas funcionalidades para
 ### Prioridad Media
 
 - [ ] **Caché y procesamiento en segundo plano**: Reducir tiempos de espera
-- [ ] **API pública**: Permitir integración con otros servicios
 
 ### Prioridad Baja
 
 - [ ] **Instalación como PWA (Progressive Web App)**: Usar offline en dispositivos móviles
 - [ ] **Soporte para archivos de gran tamaño**: Mejorar manejo de subtítulos largos
 
-## Implementación a Corto Plazo
+## Mejoras técnicas y de desarrollo
 
-Para comenzar con las mejoras, se recomienda implementar primero:
+### Prioridad Alta
 
-1. **Historial de traducciones**
+- [x] Refactorizar y limpiar el código para eliminar referencias a campos no utilizados (por ejemplo, eliminar referencias a `subtitles` en `TranslationService.java`). (Implementado: 17 de mayo de 2025)
+- [ ] Añadir tests automáticos para los flujos de traducción y detección de idioma.
 
-   ```
-   - Crear base de datos local para almacenar traducciones completadas
-   - Añadir sección "Historial" a la interfaz
-   - Permitir descargar/eliminar traducciones anteriores
-   ```
+### Prioridad Media
 
-2. **Soporte para múltiples formatos**
+- [ ] Añadir soporte para variables de entorno personalizadas en el arranque.
 
-   ```
-   - Añadir parsers para .vtt, .ass y otros formatos comunes
-   - Actualizar la interfaz para mostrar formatos soportados
-   - Implementar conversión entre formatos
-   ```
+### Prioridad Baja
 
-3. **Previsualización de subtítulos**
-   ```
-   - Añadir reproductor de video simple para archivos locales
-   - Implementar sincronización de subtítulos con el video
-   - Permitir ajustes en tiempo real
-   ```
+- [ ] Documentar mejor los scripts y utilidades de desarrollo.
 
 ---
 

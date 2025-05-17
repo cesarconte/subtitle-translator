@@ -157,6 +157,21 @@ public class TranslationController {
             // Parse content
             List<SubtitleBlock> subtitles = srtParser.parse(request.getSrtContent());
 
+            // Format validation: max 40 characters per line
+            List<io.github.cesarconte.subtitle_translator.util.SubtitleFormatValidator.ValidationResult> violations = io.github.cesarconte.subtitle_translator.util.SubtitleFormatValidator
+                    .validateLineLength(subtitles, 40);
+            String formatWarning = null;
+            if (!violations.isEmpty()) {
+                StringBuilder warningMsg = new StringBuilder(
+                        "Warning: The following lines exceed 40 characters per line:\n");
+                for (io.github.cesarconte.subtitle_translator.util.SubtitleFormatValidator.ValidationResult v : violations) {
+                    warningMsg.append(String.format("Subtitle #%d, line %d (%d chars): %s\n", v.subtitleId,
+                            v.lineNumber, v.length, v.lineContent));
+                }
+                formatWarning = warningMsg.toString();
+                logger.warn(formatWarning);
+            }
+
             // Get source and target languages
             String sourceLang = "auto".equals(request.getSourceLanguage()) ? null : request.getSourceLanguage();
             String targetLang = request.getTargetLanguage();
@@ -176,6 +191,13 @@ public class TranslationController {
 
             // Generate translated SRT content
             String translatedContent = srtParser.generate(translatedSubtitles);
+
+            // If there was a format warning, append it to the translated content (or handle
+            // as needed)
+            if (formatWarning != null) {
+                translatedContent = "WARNING: Some lines exceed 40 characters per line.\n" + formatWarning + "\n"
+                        + translatedContent;
+            }
 
             // Prepare confidence data for the response
             List<TranslationResponse.SubtitleConfidence> confidenceData = new ArrayList<>();
@@ -308,6 +330,22 @@ public class TranslationController {
             logger.error("Error detecting language", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new LanguageDetectionResponse(false, "Error detecting language: " + e.getMessage()));
+        }
+    }
+
+    /**
+     * Endpoint to list available DeepL glossaries for the configured account
+     * 
+     * @return List of glossaries (id, name, source_lang, target_lang)
+     */
+    @GetMapping("/glossaries")
+    public ResponseEntity<List<java.util.Map<String, Object>>> listGlossaries() {
+        try {
+            List<java.util.Map<String, Object>> glossaries = translationService.listAvailableGlossaries();
+            return ResponseEntity.ok(glossaries);
+        } catch (Exception e) {
+            logger.error("Error listing DeepL glossaries", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(List.of());
         }
     }
 }
