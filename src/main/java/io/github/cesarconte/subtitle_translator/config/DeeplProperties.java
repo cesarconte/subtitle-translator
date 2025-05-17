@@ -14,6 +14,7 @@ public class DeeplProperties {
     // deepl.api.key -> api.key
     private Api api = new Api();
     private Confidence confidence = new Confidence();
+    private Translation translation = new Translation();
 
     // Nested properties class for "api" properties (deepl.api.*)
     public static class Api {
@@ -50,6 +51,55 @@ public class DeeplProperties {
         }
     }
 
+    // Nested class for translation-specific properties
+    public static class Translation {
+        private boolean tagHandlingEnabled = true;
+        private String formality = "default"; // default, more, less, prefer_more, prefer_less
+        private String glossaryId;
+        private boolean splitSentences = true;
+        private boolean preserveFormatting = true;
+
+        public boolean isTagHandlingEnabled() {
+            return tagHandlingEnabled;
+        }
+
+        public void setTagHandlingEnabled(boolean tagHandlingEnabled) {
+            this.tagHandlingEnabled = tagHandlingEnabled;
+        }
+
+        public String getFormality() {
+            return formality;
+        }
+
+        public void setFormality(String formality) {
+            this.formality = formality;
+        }
+
+        public String getGlossaryId() {
+            return glossaryId;
+        }
+
+        public void setGlossaryId(String glossaryId) {
+            this.glossaryId = glossaryId;
+        }
+
+        public boolean isSplitSentences() {
+            return splitSentences;
+        }
+
+        public void setSplitSentences(boolean splitSentences) {
+            this.splitSentences = splitSentences;
+        }
+
+        public boolean isPreserveFormatting() {
+            return preserveFormatting;
+        }
+
+        public void setPreserveFormatting(boolean preserveFormatting) {
+            this.preserveFormatting = preserveFormatting;
+        }
+    }
+
     // Getters and setters
     public Api getApi() {
         return api;
@@ -65,5 +115,13 @@ public class DeeplProperties {
 
     public void setConfidence(Confidence confidence) {
         this.confidence = confidence;
+    }
+
+    public Translation getTranslation() {
+        return translation;
+    }
+
+    public void setTranslation(Translation translation) {
+        this.translation = translation;
     }
 }

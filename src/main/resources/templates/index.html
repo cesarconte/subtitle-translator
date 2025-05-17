@@ -168,6 +168,81 @@
         </div>
       </div>
 
+      <!-- Opciones avanzadas de traducción -->
+      <div
+        class="form__advanced-options w-100 animate-fadeInUp animate-delay-md"
+      >
+        <details class="advanced-options">
+          <summary class="advanced-options__summary">
+            Advanced translation options
+          </summary>
+          <div class="advanced-options__content flex flex-col gap-md">
+            <!-- Formality option -->
+            <div class="form-group">
+              <label for="formality" class="form-label">Formality:</label>
+              <select id="formality" name="formality" class="select-base">
+                <option value="default">Default</option>
+                <option value="more">More formal</option>
+                <option value="less">Less formal</option>
+                <option value="prefer_more">Prefer more formal</option>
+                <option value="prefer_less">Prefer less formal</option>
+              </select>
+              <p class="form-help">
+                Set the desired formality level for the translation
+              </p>
+            </div>
+
+            <!-- Tag handling -->
+            <div class="form-group">
+              <div class="form-check">
+                <input
+                  type="checkbox"
+                  id="tagHandlingEnabled"
+                  name="tagHandlingEnabled"
+                  checked
+                />
+                <label for="tagHandlingEnabled"
+                  >Enable HTML/XML tag handling</label
+                >
+              </div>
+              <p class="form-help">
+                Preserve HTML formatting tags like &lt;i&gt;, &lt;b&gt;,
+                &lt;font&gt; in subtitles
+              </p>
+            </div>
+
+            <!-- Preserve formatting -->
+            <div class="form-group">
+              <div class="form-check">
+                <input
+                  type="checkbox"
+                  id="preserveFormatting"
+                  name="preserveFormatting"
+                  checked
+                />
+                <label for="preserveFormatting">Preserve formatting</label>
+              </div>
+              <p class="form-help">
+                Preserve punctuation, spaces and line breaks from the source
+                text
+              </p>
+            </div>
+
+            <!-- Glossary selection - Hidden for now, can be enabled when glossary support is added -->
+            <div class="form-group" style="display: none">
+              <label for="glossaryId" class="form-label">Glossary:</label>
+              <select id="glossaryId" name="glossaryId" class="select-base">
+                <option value="">No glossary</option>
+                <!-- Glossary options would be populated dynamically -->
+              </select>
+              <p class="form-help">
+                Select a custom glossary to use for translation
+              </p>
+            </div>
+          </div>
+        </details>
+      </div>
+
       <!-- Botón de envío -->
       <div
         class="form__actions flex justify-end gap-md submit-button-responsive animate-fadeInUp animate-delay-md"

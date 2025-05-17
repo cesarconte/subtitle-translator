@@ -332,13 +332,15 @@ async function checkTranslationProgress(sessionId) {
  * @param {string} targetLang - Código de idioma destino
  * @param {string} sourceLang - Código de idioma origen (puede ser "auto")
  * @param {function} [progressCallback] - Optional callback for progress updates
+ * @param {Object} [advancedOptions] - Advanced translation options
  * @returns {Promise<TranslationResult>} Translation result
  */
 export async function translateSRT(
   srtContent,
   targetLang,
   sourceLang,
-  progressCallback
+  progressCallback,
+  advancedOptions = {}
 ) {
   try {
     // Clear any existing progress check interval
@@ -388,6 +390,16 @@ export async function translateSRT(
         targetLanguage: targetLang,
         sourceLanguage: sourceLang,
         fileName: getFileName(), // Get the file name from the currently selected file
+        formality: advancedOptions.formality || "default",
+        tagHandlingEnabled:
+          advancedOptions.tagHandlingEnabled !== undefined
+            ? advancedOptions.tagHandlingEnabled
+            : true,
+        preserveFormatting:
+          advancedOptions.preserveFormatting !== undefined
+            ? advancedOptions.preserveFormatting
+            : true,
+        glossaryId: advancedOptions.glossaryId || "",
       }),
     });
 

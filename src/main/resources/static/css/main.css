@@ -24,6 +24,7 @@
 @import url("components/progress-tracker.css");
 @import url("components/subtitle-editor.css");
 @import url("components/subtitle-block.css");
+@import url("components/advanced-options.css");
 
 /* Páginas específicas */
 @import url("pages/index.css");

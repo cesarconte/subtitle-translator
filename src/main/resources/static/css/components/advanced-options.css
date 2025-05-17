@@ -1,0 +1,73 @@
+/* Advanced options component */
+.advanced-options {
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-md);
+  margin-top: 1rem;
+  background-color: var(--color-surface);
+  width: 100%;
+}
+
+.advanced-options__summary {
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  font-weight: 500;
+  color: var(--color-primary);
+  position: relative;
+  outline: none;
+}
+
+.advanced-options__summary::-webkit-details-marker {
+  display: none;
+}
+
+.advanced-options__summary::after {
+  content: "";
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  width: 0.8rem;
+  height: 0.8rem;
+  border-right: 2px solid var(--color-primary);
+  border-bottom: 2px solid var(--color-primary);
+  transform: translateY(-70%) rotate(45deg);
+  transition: transform 0.2s ease;
+}
+
+.advanced-options[open] .advanced-options__summary::after {
+  transform: translateY(-30%) rotate(-135deg);
+}
+
+.advanced-options__content {
+  padding: 1rem;
+  background-color: var(--color-surface-variant);
+  border-top: 1px solid var(--color-border);
+  border-radius: 0 0 var(--border-radius-md) var(--border-radius-md);
+}
+
+/* Form groups for options */
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.form-help {
+  margin-top: 0.25rem;
+  font-size: 0.875rem;
+  color: var(--color-on-surface-variant);
+}
+
+.form-check {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.form-check input[type="checkbox"] {
+  width: 1.125rem;
+  height: 1.125rem;
+}

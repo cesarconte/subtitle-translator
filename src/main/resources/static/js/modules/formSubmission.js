@@ -112,6 +112,19 @@ export function initFormSubmission(options) {
       fileName = options.getFileName();
     }
 
+    // Get advanced options
+    const advancedOptions = {
+      formality: document.getElementById("formality")?.value || "default",
+      tagHandlingEnabled:
+        document.getElementById("tagHandlingEnabled")?.checked !== false,
+      preserveFormatting:
+        document.getElementById("preserveFormatting")?.checked !== false,
+      glossaryId: document.getElementById("glossaryId")?.value || "",
+    };
+
+    // Log for debugging
+    console.log("Advanced translation options:", advancedOptions);
+
     // Start translation
     updateSubmitState(true);
 
@@ -138,7 +151,8 @@ export function initFormSubmission(options) {
         fileContent,
         languages.targetLanguage,
         languages.sourceLanguage,
-        progressCallback
+        progressCallback,
+        advancedOptions
       );
 
       // Call the success callback with the full response (including confidence information)

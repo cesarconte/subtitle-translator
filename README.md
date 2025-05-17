@@ -14,6 +14,40 @@ SubTranslator es una aplicación web que permite a los usuarios traducir archivo
 - Vista previa del contenido original y traducido
 - Descarga del archivo de subtítulos traducido
 - Copia al portapapeles con un solo clic
+- **Opciones avanzadas de traducción:**
+  - Control de formalidad (más formal, menos formal)
+  - Preservación de etiquetas HTML/XML en subtítulos
+  - Preservación del formato original
+  - Soporte para glosarios personalizados
+
+## Opciones Avanzadas de Traducción
+
+SubTranslator proporciona opciones avanzadas para mejorar la calidad de la traducción:
+
+### Formalidad
+
+- **Default:** Usa la configuración predeterminada de DeepL
+- **More formal:** Genera una traducción con lenguaje más formal
+- **Less formal:** Genera una traducción con lenguaje más coloquial
+- **Prefer more formal:** Preferencia por lenguaje formal, pero no tan estricto
+- **Prefer less formal:** Preferencia por lenguaje informal, pero no tan coloquial
+
+### Manejo de etiquetas HTML
+
+Activa esta opción para preservar etiquetas HTML comunes en subtítulos como:
+
+- `<i>texto en cursiva</i>`
+- `<b>texto en negrita</b>`
+- `<u>texto subrayado</u>`
+- `<font color="red">texto coloreado</font>`
+
+### Preservación de formato
+
+Mantiene la puntuación, espacios y saltos de línea del texto original en la traducción.
+
+### Glosarios (próximamente)
+
+Permite el uso de glosarios personalizados para asegurar que ciertos términos se traduzcan de manera consistente.
 
 ## Idiomas soportados
 
