@@ -29,6 +29,7 @@
 
 /* Páginas específicas */
 @import url("pages/index.css");
+@import url("pages/settings.css");
 
 /* Fuentes web (opcional, se puede usar Google Fonts o añadir los archivos localmente) */
 @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap");

@@ -1,0 +1,67 @@
+/* Estilos para la página de Settings de SubTranslator siguiendo las guías del proyecto */
+
+.settings-section {
+  background: var(--md-surface);
+  border-radius: var(--border-radius-large);
+  box-shadow: var(--md-shadow-2);
+  padding: var(--spacing-lg);
+  margin-bottom: var(--spacing-xl);
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.settings-section h2 {
+  color: var(--md-primary);
+  font-size: var(--font-size-xl);
+  margin-bottom: var(--spacing-md);
+  font-weight: 700;
+}
+
+.settings-section h3 {
+  color: var(--md-secondary);
+  font-size: var(--font-size-lg);
+  margin-top: var(--spacing-lg);
+  margin-bottom: var(--spacing-sm);
+  font-weight: 600;
+}
+
+.settings-section ul,
+.settings-section ol {
+  margin-left: var(--spacing-lg);
+  margin-bottom: var(--spacing-md);
+}
+
+.settings-section li {
+  margin-bottom: var(--spacing-xs);
+  font-size: var(--font-size-base);
+}
+
+.settings-section p,
+.settings-section li {
+  color: var(--md-on-surface-variant);
+}
+
+.settings-section code {
+  background: var(--md-surface-variant);
+  color: var(--md-on-surface);
+  border-radius: var(--border-radius-small);
+  padding: 2px 6px;
+  font-size: 0.95em;
+}
+
+.settings-section a {
+  color: var(--md-primary);
+  text-decoration: underline;
+  transition: color 0.2s;
+}
+
+.settings-section a:hover {
+  color: var(--md-secondary);
+}
+
+.subtitle {
+  color: var(--md-on-surface-variant);
+  font-size: var(--font-size-lg);
+  margin-bottom: var(--spacing-lg);
+}

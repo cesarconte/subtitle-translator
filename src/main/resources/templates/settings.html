@@ -1,0 +1,120 @@
+<!-- Settings Page for SubTranslator -->
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Settings | SubTranslator</title>
+  </head>
+  <body>
+    <div
+      th:replace="~{layout/base :: layout(
+      ~{::title},
+      ~{},
+      ~{settings :: mainContent},
+      ~{},
+      ~{}
+    )}"
+    ></div>
+  </body>
+</html>
+
+<th:block th:fragment="mainContent">
+  <header class="header">
+    <h1>Settings</h1>
+    <p class="subtitle">
+      Configure your preferences and learn how to use advanced features.
+    </p>
+  </header>
+
+  <section class="settings-section">
+    <h2>Glossary Usage Guide</h2>
+    <p>
+      SubTranslator supports <strong>DeepL glossaries</strong> to help you
+      control the translation of specific terms, names, or phrases. This is
+      especially useful for:
+    </p>
+    <ul>
+      <li>Ensuring names (e.g., <code>Susan</code>) are not translated.</li>
+      <li>
+        Maintaining consistent translations for technical terms or brand names.
+      </li>
+      <li>Customizing translations for your project or organization.</li>
+    </ul>
+    <h3>How to Use a Glossary</h3>
+    <ol>
+      <li>
+        <strong>Create a glossary in DeepL:</strong>
+        <ul>
+          <li>
+            Log in to your
+            <a
+              href="https://www.deepl.com/pro-api?cta=header-pro-api/"
+              target="_blank"
+              rel="noopener"
+              >DeepL Pro account</a
+            >.
+          </li>
+          <li>
+            Go to the <strong>Glossaries</strong> section and create a new
+            glossary for your language pair.
+          </li>
+          <li>
+            Add the terms you want to control (e.g., <code>Susan</code> →
+            <code>Susan</code>, <code>CPU</code> → <code>CPU</code>).
+          </li>
+        </ul>
+      </li>
+      <li>
+        <strong>Select your glossary in SubTranslator:</strong>
+        <ul>
+          <li>
+            When translating, open
+            <strong>Advanced translation options</strong>.
+          </li>
+          <li>
+            If you have glossaries, you will see a dropdown to select one. If
+            not, you can enter a glossary ID manually.
+          </li>
+        </ul>
+      </li>
+      <li>
+        <strong>Translate as usual:</strong> The selected glossary will be
+        applied, and your specified terms will be preserved or translated as you
+        defined.
+      </li>
+    </ol>
+    <h3>Troubleshooting</h3>
+    <ul>
+      <li>
+        If no glossaries appear, make sure you have created at least one in your
+        DeepL account for the selected language pair.
+      </li>
+      <li>
+        Glossaries are only available for certain language pairs supported by
+        DeepL.
+      </li>
+      <li>
+        If you enter an invalid glossary ID, the translation may fail or ignore
+        the glossary.
+      </li>
+    </ul>
+    <p>
+      For more details, see the
+      <a
+        href="https://www.deepl.com/docs-api/glossaries/"
+        target="_blank"
+        rel="noopener"
+        >DeepL API Glossaries documentation</a
+      >.
+    </p>
+  </section>
+
+  <section class="settings-section">
+    <h2>Other Settings (Coming Soon)</h2>
+    <ul>
+      <li>Theme and appearance customization</li>
+      <li>Default translation options</li>
+      <li>Account and API key management</li>
+    </ul>
+  </section>
+</th:block>
