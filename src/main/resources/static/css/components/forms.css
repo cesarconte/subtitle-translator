@@ -419,7 +419,8 @@
   content: "";
   position: absolute;
   left: 0.2em;
-  top: 0.18em;
+  top: 50%;
+  transform: translateY(-50%);
   width: 1.1em;
   height: 1.1em;
   background: var(--md-surface);
@@ -431,7 +432,7 @@
 .md3-switch:checked::before {
   left: 1.7em;
   background: var(--md-on-primary);
-  transform: scale(1.05);
+  transform: translateY(-50%) scale(1.05);
 }
 
 .md3-switch:focus {
