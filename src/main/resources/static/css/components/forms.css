@@ -33,6 +33,9 @@
   border-radius: var(--border-radius-small);
   transition: border-color var(--transition-normal),
     box-shadow var(--transition-normal);
+  overflow: hidden; /* Added for placeholder truncation */
+  text-overflow: ellipsis; /* Added for placeholder truncation */
+  white-space: nowrap; /* Added for placeholder truncation */
 }
 
 .form__input:focus {
@@ -92,12 +95,9 @@
   line-height: 1.5;
   transition: border-color var(--transition-normal),
     box-shadow var(--transition-normal);
-}
-
-.select-base:focus {
-  border-color: var(--md-primary);
-  box-shadow: 0 0 0 1px var(--md-primary);
-  outline: none;
+  overflow: hidden; /* Added for selected value truncation */
+  text-overflow: ellipsis; /* Added for selected value truncation */
+  white-space: nowrap; /* Added for selected value truncation */
 }
 
 /* Select */

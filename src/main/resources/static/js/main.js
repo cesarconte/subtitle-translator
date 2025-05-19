@@ -207,20 +207,35 @@ document.addEventListener("DOMContentLoaded", () => {
       const select = document.createElement("select");
       select.id = "glossaryId";
       select.name = "glossaryId";
-      select.className = glossaryInput.className;
+      // Ensure select-base and w-100 are present, respect existing classes if any
+      const existingClasses = glossaryInput.className
+        .split(" ")
+        .filter((c) => c !== "input-base");
+      select.className = ["select-base", "w-100", ...existingClasses].join(" ");
       select.innerHTML =
         '<option value="">No glossary</option>' +
         glossaries
           .map(
             (g) =>
-              `<option value="${g.id}">${g.name} (${g.source_lang}→${g.target_lang})</option>`
+              `<option value="${g.id}" title="${g.name} (${g.source_lang}→${g.target_lang})">${g.name} (${g.source_lang}→${g.target_lang})</option>`
           )
           .join("");
       glossaryInput.parentNode.replaceChild(select, glossaryInput);
     } else {
-      // No glossaries: keep as text input, but update placeholder
-      glossaryInput.placeholder =
-        "No glossaries found. Enter ID manually (optional)";
+      // No glossaries: keep as text input, but set placeholder and tooltip
+      // Get the default placeholder from the data attribute or use a fallback
+      const defaultPlaceholder =
+        glossaryInput.getAttribute("data-placeholder-default") ||
+        "Enter glossary ID (optional)";
+      const noGlossariesMsg = "No glossaries found. ";
+
+      // Set placeholder and title with a clear, concise message
+      glossaryInput.placeholder = noGlossariesMsg + defaultPlaceholder;
+      glossaryInput.title = noGlossariesMsg + defaultPlaceholder;
+
+      // Fix the styling to prevent truncation
+      // glossaryInput.style.textOverflow = "clip";
+      // glossaryInput.style.whiteSpace = "normal";
     }
   }
   setupGlossarySelector();
